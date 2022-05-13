@@ -12,6 +12,20 @@ namespace GemCare.API.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
+            if (IsValidApiKeyRequest)
+            {
+
+            }
+            else
+            {
+
+            }
+            return Ok();
+        }
+
+        [HttpGet("detail")]
+        public IActionResult ServiceDetail(int serviceid)
+        {
             return Ok();
         }
     }
