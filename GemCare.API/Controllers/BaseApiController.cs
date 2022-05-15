@@ -54,6 +54,14 @@ namespace GemCare.API.Controllers
                     TokenGenerator _tokenGenerator = new TokenGenerator(Configuration, EncHelper);
                     var (isValid, isExpired, message) = _tokenGenerator.ValidateToken(authToken);
                     _isValidToken = isValid;
+                    if(isValid)
+                    {
+                        User_Id = _tokenGenerator.GetUserId(authToken);
+                    }
+                    else
+                    {
+                        User_Id = 0;
+                    }
                 }
                 catch
                 {
@@ -62,7 +70,9 @@ namespace GemCare.API.Controllers
                 return _isValidToken;
             }
         }
+        protected int User_Id { get; set; }
     }
+    
 
     //public abstract class BaseApiKeyController : BaseApiController
     //{

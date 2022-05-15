@@ -18,7 +18,7 @@ namespace GemCare.API.Controllers
             _generalRepository = generalRepository;
         }
 
-        [HttpGet]
+        [HttpGet("GetSlider/{ismobile}")]
         public IActionResult GetSlider(bool ismobile)
         {
             IListResponse<SliderResponse> response = new ListResponse<SliderResponse>

@@ -1,12 +1,12 @@
 D:\Zafar\GemCarLab\Proj\GemCare.Data\bin\Debug\net5.0\GemCare.Data.deps.json
 D:\Zafar\GemCarLab\Proj\GemCare.Data\bin\Debug\net5.0\GemCare.Data.dll
 D:\Zafar\GemCarLab\Proj\GemCare.Data\bin\Debug\net5.0\GemCare.Data.pdb
+D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.csproj.AssemblyReference.cache
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.GeneratedMSBuildEditorConfig.editorconfig
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.AssemblyInfoInputs.cache
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.AssemblyInfo.cs
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.csproj.CoreCompileInputs.cache
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.dll
-D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\ref\GemCare.Data.dll
-D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.pdb
-D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.csproj.AssemblyReference.cache
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\refint\GemCare.Data.dll
+D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.pdb
+D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\ref\GemCare.Data.dll
