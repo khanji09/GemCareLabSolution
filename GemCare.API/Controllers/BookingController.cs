@@ -33,7 +33,7 @@ namespace GemCare.API.Controllers
                         AddressId = model.Addressid,
                         ImagePath = model.Imagepath,
                         ServiceId = model.Serviceid,
-                        UserId = model.Userid,
+                        UserId = User_Id,
                         WorkDescription = model.Workdescription,
                         RequiredDate = model.Requireddate
                     };

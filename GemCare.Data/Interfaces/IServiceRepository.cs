@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GemCare.Data.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace GemCare.Data.Interfaces
 {
     public interface IServiceRepository
     {
-        (int status, string message) GetAllServices();
-        (int status, string message) GetServiceDetail(int serviceId);
+        (int status, string message,List<ServiceDTO> services) GetAllServices();
+        (int status, string message,ServiceDTO service) GetServiceDetail(int serviceId);
     }
 }
