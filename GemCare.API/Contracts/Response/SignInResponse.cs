@@ -14,5 +14,7 @@ namespace GemCare.API.Contracts.Response
         public string Authtoken { get; set; }
         public string Refreshtoken { get; set; }
         public string Imagepath { get; set; }
+        public int smsotp { get; set; }
+        public int emailcode { get; set; }
     }
 }

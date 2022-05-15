@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace GemCare.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ServicesController : BaseApiController
     {
         [HttpGet("getall")]

@@ -14,15 +14,12 @@ namespace GemCare.Data.DTOs
         public string UserRole { get; set; }
         public DateTime DOB { get; set; }
         public string Mobile { get; set; }
-        public string ImagePath { get; set; }
-        public string TutoringMode { get; set; }
-        public string TutorType { get; set; }
-        public string TutorTypeDetail { get; set; }
-        public int MobileConfirmationCode { get; set; }
-        public bool IsAccountConfirmed { get; set; }
+        public string ImagePath { get; set; }      
         public string Gender { get; set; }
         public string Address { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public int SMSOTP { get; set; }
+        public int EmailCode { get; set; }       
     }
 }

@@ -29,7 +29,7 @@ namespace GemCare.Data.Repository
                     var sqlCommand = new SqlCommand
                     {
                         Connection = dbConnection,
-                        CommandText = "spTutorLogin",
+                        CommandText = "spCustomerLogin",
                         CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                         CommandType = CommandType.StoredProcedure
                     };
@@ -61,7 +61,9 @@ namespace GemCare.Data.Repository
                             FirstName = row["FirstName"].ToString(),
                             LastName = row["LastName"].ToString(),
                             UserRole = row["UserRole"].ToString(),
-                            ImagePath = row["ImagePath"].ToString()
+                            ImagePath = row["ImagePath"].ToString(),
+                            SMSOTP = int.Parse(row["SMSOTP"].ToString()),
+                            EmailCode = int.Parse(row["EmailCode"].ToString())
                         };
                     }
                 }
@@ -153,7 +155,6 @@ namespace GemCare.Data.Repository
                 };
 
                 sqlCommand.Parameters.AddWithValue("@pEmail", email);
-                sqlCommand.Parameters.AddWithValue("@pIsTutor", isTutor);
                 // out params
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
@@ -183,7 +184,7 @@ namespace GemCare.Data.Repository
                     else
                     {
                         // Update provider account lock status ??
-                        errMessage = "Email or password is incorrect. Please try again.";
+                        errMessage = "Email Address is incorrect. Please try again.";
                     }
                 }
             }

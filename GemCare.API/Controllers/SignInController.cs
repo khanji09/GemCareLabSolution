@@ -1,6 +1,7 @@
 ﻿using GemCare.API.Common;
 using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
+using GemCare.API.Interfaces;
 using GemCare.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,24 +15,20 @@ namespace GemCare.API.Controllers
     public class SignInController : BaseApiController
     {
         private readonly IAuthenticate _authenticate;
-        public SignInController(IAuthenticate authenticate)
+        private readonly ITokenGenerator _tokenGenerator;
+        public SignInController(IAuthenticate authenticate,ITokenGenerator tokenGenerator)
         {
             _authenticate = authenticate;
+            _tokenGenerator = tokenGenerator;
         }
-        [HttpPost("customer")]
+        [HttpPost("customerlogin")]
         public IActionResult CustomerSignIn([FromBody] SignInRequest request)
         {
             var response = new SingleResponse<SignInResponse>();
             if (IsValidApiKeyRequest)
             {
                 try
-                {
-                    // response status code for tutor signin.
-                    // 200 : Ok and redirect to inner screen
-                    // 400 : Bad Request
-                    // 409 : Account not confirmed. Frontend will redirect tutor to account confirmation code screen.
-                    // 404 : Either email or password is incorrect. Frontend will show the returned message.
-                    // tutor login
+                {                   
                     var (status, message, user) = _authenticate.CustomerLogin(request.Email, request.Password);
                     //
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
@@ -46,20 +43,14 @@ namespace GemCare.API.Controllers
                             Email = request.Email,
                             Firstname = user.FirstName,
                             Lastname = user.LastName,
-                            Authtoken = string.Empty, //TokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
+                            Authtoken = _tokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
                             Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
-                            Imagepath = user.ImagePath
+                            Imagepath = user.ImagePath,
+                            emailcode = user.EmailCode,
+                            smsotp = user.SMSOTP
                         };
                     }
-                    //else
-                    //{
-                    //    if(status == -2)
-                    //    {
-                    //        // account not confirmed. User will be redirected to account
-                    //        // confirmation screen.
-                    //        response.Statuscode = System.Net.HttpStatusCode.Conflict;
-                    //    }
-                    //}
+
                 }
                 catch (Exception ex)
                 {

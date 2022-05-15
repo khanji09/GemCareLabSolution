@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using GemCare.API.Utils;
 namespace GemCare.API
 {
     public class Startup
@@ -35,13 +35,16 @@ namespace GemCare.API
                         .AllowAnyHeader());
             });
             //
+            services.AddApplicationDependency();
+            services.AddDataDependency();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gem Care Lab", Version = "v1.0" });
             });
+            
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
