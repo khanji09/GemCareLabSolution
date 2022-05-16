@@ -68,7 +68,7 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("customerlogin")]
+        [HttpPost("VerifyLogin")]
         public IActionResult VerifyLogin([FromBody] EmailLoginCodeVerificationRequest request)
         {
             var response = new BaseResponse();
