@@ -1,6 +1,7 @@
 ﻿using GemCare.API.Common;
 using GemCare.API.Helper;
 using GemCare.API.Interfaces;
+using GemCare.API.Services;
 using GemCare.Data.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,8 +17,8 @@ namespace GemCare.API.Utils
         {
             services.AddTransient<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IEncryptionDecryptionHelper, EncryptionDecryptionHelper>();
-            services.AddTransient<IImageHelper,ImageHelper>();           
-            
+            services.AddTransient<IImageHelper,ImageHelper>();
+            services.AddTransient<IEmailService, EmailService>();
             return services;
         }
     }

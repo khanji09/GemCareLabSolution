@@ -192,5 +192,48 @@ namespace GemCare.Data.Repository
             // return data.
             return (isValidUser, errMessage);
         }
+
+        public (int status, string message) VerifyEmailLoginCode(EmailLoginCodeDTO model)
+        {
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spVerifyEmailCodeLogin",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@UserId", model.UserId);
+                sqlCommand.Parameters.AddWithValue("@EmailCode", model.EmailCode);
+
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+            }
+            catch
+            {
+                throw;
+            }
+
+            return (errorCode, errorMessage);
+        }
+
     }
 }

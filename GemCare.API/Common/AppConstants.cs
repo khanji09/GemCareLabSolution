@@ -9,5 +9,6 @@ namespace GemCare.API.Common
     {
         public static string APIKEY_ERRMESSAGE = "Invalid apikey request";
         public static string BEARER_ERRMESSAGE = "Invalid bearer request";
+        public const string SUPPORT_EMAIL = "support@gemcarelab.com";
     }
 }

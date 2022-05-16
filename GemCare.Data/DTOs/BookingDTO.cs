@@ -11,8 +11,7 @@ namespace GemCare.Data.DTOs
         public int Id { get; set; }
         public int ServiceId { get; set; }
         public int UserId { get; set; }
-        public int TechnicianId { get; set; }
-        public int AddressId { get; set; }
+        public int TechnicianId { get; set; }       
         public string WorkDescription { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
@@ -22,5 +21,10 @@ namespace GemCare.Data.DTOs
         public bool IsCancelled { get; set; } = false;
         public string CancellationReason { get; set; }
         public string ImagePath { get; set; }
+        public string Address { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PostalCode { get; set; }
+        public string MobileNumber { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
 using GemCare.API.Interfaces;
+using GemCare.Data.DTOs;
 using GemCare.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace GemCare.API.Controllers
     {
         private readonly IAuthenticate _authenticate;
         private readonly ITokenGenerator _tokenGenerator;
-        public SignInController(IAuthenticate authenticate,ITokenGenerator tokenGenerator)
+        private readonly IEmailService _emailService;
+        public SignInController(IAuthenticate authenticate,ITokenGenerator tokenGenerator, IEmailService emailService)
         {
             _authenticate = authenticate;
             _tokenGenerator = tokenGenerator;
+            _emailService = emailService;
         }
         [HttpPost("customerlogin")]
         public IActionResult CustomerSignIn([FromBody] SignInRequest request)
@@ -49,7 +52,36 @@ namespace GemCare.API.Controllers
                             emailcode = user.EmailCode,
                             smsotp = user.SMSOTP
                         };
+                        _emailService.SendLoginCode(request.Email, user.EmailCode.ToString());
                     }
+
+                }
+                catch (Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.APIKEY_ERRMESSAGE);
+            }
+            return Ok(response);
+        }
+
+        [HttpPost("customerlogin")]
+        public IActionResult VerifyLogin([FromBody] EmailLoginCodeVerificationRequest request)
+        {
+            var response = new BaseResponse();
+            if (IsValidApiKeyRequest)
+            {
+                try
+                {
+                    EmailLoginCodeDTO dto = new EmailLoginCodeDTO() { EmailCode=request.Emailcode,UserId=request.Userid};
+                    var (status, message) = _authenticate.VerifyEmailLoginCode(dto);
+                    //
+                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                        status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;                   
 
                 }
                 catch (Exception ex)
