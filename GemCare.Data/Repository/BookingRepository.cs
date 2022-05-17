@@ -37,7 +37,11 @@ namespace GemCare.Data.Repository
 
                 sqlCommand.Parameters.AddWithValue("@ServiceId", model.ServiceId);
                 sqlCommand.Parameters.AddWithValue("@UserId", model.UserId);
-                sqlCommand.Parameters.AddWithValue("@AddresId", model.AddressId);
+                sqlCommand.Parameters.AddWithValue("@Address", model.Address);
+                sqlCommand.Parameters.AddWithValue("@MobileNumber", model.MobileNumber);
+                sqlCommand.Parameters.AddWithValue("@Name", model.Name);
+                sqlCommand.Parameters.AddWithValue("@Email", model.Email);
+                sqlCommand.Parameters.AddWithValue("@PostalCode", model.PostalCode);
                 sqlCommand.Parameters.AddWithValue("@WorkDescription", model.WorkDescription);
                 sqlCommand.Parameters.AddWithValue("@ImagePath", model.ImagePath);
                 sqlCommand.Parameters.AddWithValue("@RequiredDate", model.RequiredDate);

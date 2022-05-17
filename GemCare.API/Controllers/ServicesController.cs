@@ -23,9 +23,9 @@ namespace GemCare.API.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            ListResponse<ServiceResponse> response = new ListResponse<ServiceResponse>()
+            ListResponse<AllServicesResponse> response = new ListResponse<AllServicesResponse>()
             {
-                Result = new List<ServiceResponse>()
+                Result = new List<AllServicesResponse>()
             };
             if (IsValidApiKeyRequest)
             {
@@ -36,14 +36,12 @@ namespace GemCare.API.Controllers
                 if (status > 0)
                 {
                     response.Result = (from service in services
-                                       select new ServiceResponse()
-                                       {
-                                           Description = service.Description,
+                                       select new AllServicesResponse()
+                                       {                                          
                                            Id = service.Id,
                                            ImageUrl = service.ImageUrl,
                                            Name = service.Name,
-                                           Price = service.Price,
-                                           ShortDescription = service.ShortDescription
+                                           Price = service.Price                                           
                                        }).ToList();
                 }
             }

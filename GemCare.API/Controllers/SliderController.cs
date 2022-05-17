@@ -30,9 +30,15 @@ namespace GemCare.API.Controllers
                 var (status, message, images) = _generalRepository.GetSliderImages(ismobile);
                 response.Statuscode = 1 == status ? HttpStatusCode.OK : HttpStatusCode.NotFound;
                 response.Message = message;
-                if(images?.Count > 0)
+                if (images?.Count > 0)
                 {
+                    response.Result = (from img in images
+                                       select new SliderResponse()
+                                       {
+                                           Imageurl = img.ImageUrl,
+                                           Shortdescription = img.ShortDescription
 
+                                       }).ToList();
                 }
             }
             else

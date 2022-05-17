@@ -30,12 +30,18 @@ namespace GemCare.API.Controllers
                 {
                     BookingDTO booking = new BookingDTO()
                     {
-                        AddressId = model.Addressid,
+                        Email = model.Email,
+                        Name = model.Name,
+                        PostalCode = model.Postalcode,
+                        MobileNumber = model.Mobilenumber,
+
+                        Address = model.Address,
                         ImagePath = model.Imagepath,
                         ServiceId = model.Serviceid,
                         UserId = User_Id,
                         WorkDescription = model.Workdescription,
                         RequiredDate = model.Requireddate
+                       
                     };
                     (int status, string message, int bookingid) = _bookingRepository.AddBooking(booking);
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
