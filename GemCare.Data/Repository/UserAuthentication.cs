@@ -63,7 +63,8 @@ namespace GemCare.Data.Repository
                             UserRole = row["UserRole"].ToString(),
                             ImagePath = row["ImagePath"].ToString(),
                             SMSOTP = int.Parse(row["SMSOTP"].ToString()),
-                            EmailCode = int.Parse(row["EmailCode"].ToString())
+                            EmailCode = int.Parse(row["EmailCode"].ToString()),
+                            Email = row["Email"].ToString()
                         };
                     }
                 }
@@ -186,8 +187,10 @@ namespace GemCare.Data.Repository
             return (isValidUser, errMessage);
         }
 
-        public (int status, string message) VerifyEmailLoginCode(EmailLoginCodeDTO model)
+        public (int status, string message, AppUser user) VerifyEmailLoginCode(EmailLoginCodeDTO model)
         {
+            DataTable dt = new();
+            AppUser appUser = null;
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
@@ -215,17 +218,34 @@ namespace GemCare.Data.Repository
                 };
                 sqlCommand.Parameters.Add(errMessageParam);
                 //
-                sqlCommand.ExecuteNonQuery();
+                var sqlAdapter = new SqlDataAdapter(sqlCommand);
+                sqlAdapter.Fill(dt);
                 //
                 errorCode = int.Parse(errCodeParam.Value.ToString());
                 errorMessage = errMessageParam.Value.ToString();
+                if (errorCode == 1)
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        DataRow row = dt.Rows[0];
+                        appUser = new AppUser
+                        {
+                            Id = int.Parse(row["UserId"].ToString()),
+                            FirstName = row["FirstName"].ToString(),
+                            LastName = row["LastName"].ToString(),
+                            UserRole = row["UserRole"].ToString(),
+                            ImagePath = row["ImagePath"].ToString(),
+                            Email = row["Email"].ToString()
+                        };
+                    }
+                }
             }
             catch
             {
                 throw;
             }
 
-            return (errorCode, errorMessage);
+            return (errorCode, errorMessage, appUser);
         }
 
         public (int status, string message, AppUser user) AdminLogin(string email, string password)

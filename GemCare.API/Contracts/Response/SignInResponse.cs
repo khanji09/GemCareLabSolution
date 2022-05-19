@@ -16,6 +16,7 @@ namespace GemCare.API.Contracts.Response
         public string Imagepath { get; set; }
         public int smsotp { get; set; }
         public int emailcode { get; set; }
+      
     }
 
     public class AdminSignInResponse
