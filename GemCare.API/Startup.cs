@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GemCare.API.Utils;
+using GemCare.API.Contracts.Response;
+
 namespace GemCare.API
 {
     public class Startup
@@ -37,7 +39,16 @@ namespace GemCare.API
             //
             services.AddApplicationDependency();
             services.AddDataDependency();
-            services.AddControllers();
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(option =>
+                {
+                    option.InvalidModelStateResponseFactory = actionContext =>
+                    {
+                        //var modelState = actionContext.ModelState.Values;
+                        //return new BadRequestObjectResult(modelState);
+                        return new OkObjectResult(FormatOutput(actionContext));
+                    };
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gem Care Lab", Version = "v1.0" });
@@ -51,13 +62,13 @@ namespace GemCare.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "GemCare.API v1"));
             }
 
            // app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "GemCare.API v1"));
             // enable cors
             app.UseCors("CorsPolicy");
             //
@@ -67,6 +78,23 @@ namespace GemCare.API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public IBaseResponse FormatOutput(ActionContext context)
+        {
+            IBaseResponse response = new BaseResponse();
+            foreach (var modelStateKey in context.ModelState.Keys)
+            {
+                var modelStateVal = context.ModelState[modelStateKey];
+                foreach (var error in modelStateVal.Errors)
+                {
+                    response.Message = error.ErrorMessage;
+                    break;
+                }
+            }
+            response.Statuscode = System.Net.HttpStatusCode.BadRequest;
+            response.Haserror = true;
+            return response;
         }
     }
 }

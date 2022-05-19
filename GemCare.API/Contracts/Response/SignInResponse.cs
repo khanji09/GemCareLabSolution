@@ -18,4 +18,15 @@ namespace GemCare.API.Contracts.Response
         public int emailcode { get; set; }
       
     }
+
+    public class AdminSignInResponse
+    {
+        public int Userid { get; set; }
+        public string Email { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Authtoken { get; set; }
+        public string Refreshtoken { get; set; }
+        public string Imagepath { get; set; }
+    }
 }

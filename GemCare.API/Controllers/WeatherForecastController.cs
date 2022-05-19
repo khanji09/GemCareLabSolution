@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GemCare.API.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace GemCare.API.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IEncryptionDecryptionHelper _encHelper;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IEncryptionDecryptionHelper encHelper)
         {
             _logger = logger;
+            _encHelper = encHelper;
         }
 
         [HttpGet]
@@ -32,6 +35,14 @@ namespace GemCare.API.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("apikey")]
+        public IActionResult GetApiKey()
+        {
+            //GemCareLab.API
+            var result = _encHelper.Encrypt("GemCareLab.API");
+            return Ok(result);
         }
     }
 }

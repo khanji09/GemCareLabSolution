@@ -86,6 +86,7 @@ namespace GemCare.Data.Repository
         {
             try
             {
+                HashPassword.CreatePasswordHash(basicInfo.Password, out byte[] passwordHash, out byte[] passwordSalt);
                 using var dbConnection = new SqlConnection(GetConnectionString());
                 dbConnection.Open();
                 var sqlCommand = new SqlCommand
@@ -96,19 +97,11 @@ namespace GemCare.Data.Repository
                     CommandType = CommandType.StoredProcedure
                 };
 
+                sqlCommand.Parameters.AddWithValue("@pFirstName", basicInfo.FirstName);
+                sqlCommand.Parameters.AddWithValue("@pLastName", basicInfo.LastName);
                 sqlCommand.Parameters.AddWithValue("@pEmail", basicInfo.Email);
-                sqlCommand.Parameters.AddWithValue("@pEmail", basicInfo.Email);
-                sqlCommand.Parameters.AddWithValue("@pEmail", basicInfo.Email);
-                /*@pFirstName		nvarchar(50),
-                /@pLastName nvarchar(50),
-	@ nvarchar(150),
-	@pPasswordHash varbinary(500),
-    @pPasswordSalt varbinary(500),
-	@pMobile nvarchar(30),
-	@pErrCode       int OUTPUT,
-    @pErrMessage    nvarchar(300) OUTPUT
-                */
-
+                sqlCommand.Parameters.AddWithValue("@pPasswordHash", passwordHash);
+                sqlCommand.Parameters.AddWithValue("@pPasswordSalt", passwordSalt);
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -255,6 +248,70 @@ namespace GemCare.Data.Repository
             return (errorCode, errorMessage, appUser);
         }
 
+        public (int status, string message, AppUser user) AdminLogin(string email, string password)
+        {
+            DataTable dt = new();
+            AppUser appUser = null;
+            try
+            {
+                var (isValid, message) = IsValidCredentials(email, password, true);
+                if (isValid)
+                {
+                    using var dbConnection = new SqlConnection(GetConnectionString());
+                    dbConnection.Open();
+                    var sqlCommand = new SqlCommand
+                    {
+                        Connection = dbConnection,
+                        CommandText = "spAdminLogin",
+                        CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                        CommandType = CommandType.StoredProcedure
+                    };
 
+                    sqlCommand.Parameters.AddWithValue("@pEmail", email);
+
+                    SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    sqlCommand.Parameters.Add(errCodeParam);
+                    SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    sqlCommand.Parameters.Add(errMessageParam);
+                    //
+                    var sqlAdapter = new SqlDataAdapter(sqlCommand);
+                    sqlAdapter.Fill(dt);
+                    //
+                    errorCode = int.Parse(errCodeParam.Value.ToString());
+                    errorMessage = errMessageParam.Value.ToString();
+                    if (errorCode == 1)
+                    {
+                        DataRow row = dt.Rows[0];
+                        appUser = new AppUser
+                        {
+                            Id = int.Parse(row["UserId"].ToString()),
+                            FirstName = row["FirstName"].ToString(),
+                            LastName = row["LastName"].ToString(),
+                            UserRole = row["UserRole"].ToString(),
+                            ImagePath = row["ImagePath"].ToString(),
+                            SMSOTP = int.Parse(row["SMSOTP"].ToString()),
+                            EmailCode = int.Parse(row["EmailCode"].ToString())
+                        };
+                    }
+                }
+                else
+                {
+                    errorCode = -1;
+                    errorMessage = message;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            return (errorCode, errorMessage, appUser);
+        }
     }
 }
