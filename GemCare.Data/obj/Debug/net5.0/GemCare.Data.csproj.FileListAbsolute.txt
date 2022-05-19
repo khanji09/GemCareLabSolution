@@ -10,3 +10,14 @@ D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.dll
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\refint\GemCare.Data.dll
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\GemCare.Data.pdb
 D:\Zafar\GemCarLab\Proj\GemCare.Data\obj\Debug\net5.0\ref\GemCare.Data.dll
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\bin\Debug\net5.0\GemCare.Data.deps.json
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\bin\Debug\net5.0\GemCare.Data.dll
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\bin\Debug\net5.0\ref\GemCare.Data.dll
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\bin\Debug\net5.0\GemCare.Data.pdb
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.GeneratedMSBuildEditorConfig.editorconfig
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.AssemblyInfoInputs.cache
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.AssemblyInfo.cs
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.csproj.CoreCompileInputs.cache
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.dll
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\ref\GemCare.Data.dll
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.pdb

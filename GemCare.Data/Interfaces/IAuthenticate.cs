@@ -8,5 +8,6 @@ namespace GemCare.Data.Interfaces
         (int status, string message, AppUser user) CustomerLogin(string email, string password);
         public (int status, string message) VerifyEmailLoginCode(EmailLoginCodeDTO model);
         (int status, string message) SignOut(int userId, string deviceId);
+        (int status, string message, AppUser user) AdminLogin(string email, string password);
     }
 }
