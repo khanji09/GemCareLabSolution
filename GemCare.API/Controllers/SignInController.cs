@@ -43,16 +43,16 @@ namespace GemCare.API.Controllers
                         response.Result = new SignInResponse
                         {
                             Userid = user.Id,
-                            Email = request.Email,
+                            Email = user.Email,
                             Firstname = user.FirstName,
                             Lastname = user.LastName,
-                            Authtoken = _tokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
-                            Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
+                           // Authtoken = _tokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
+                           // Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
                             Imagepath = user.ImagePath,
                             emailcode = user.EmailCode,
                             smsotp = user.SMSOTP
                         };
-                        _emailService.SendLoginCode(request.Email, user.EmailCode.ToString());
+                      bool emailSent=  _emailService.SendLoginCode(user.Email, user.EmailCode.ToString());
                     }
 
                 }
@@ -71,17 +71,33 @@ namespace GemCare.API.Controllers
         [HttpPost("VerifyLogin")]
         public IActionResult VerifyLogin([FromBody] EmailLoginCodeVerificationRequest request)
         {
-            var response = new BaseResponse();
+            var response = new SingleResponse<SignInResponse>();
             if (IsValidApiKeyRequest)
             {
                 try
                 {
                     EmailLoginCodeDTO dto = new EmailLoginCodeDTO() { EmailCode=request.Emailcode,UserId=request.Userid};
-                    var (status, message) = _authenticate.VerifyEmailLoginCode(dto);
+                    var (status, message, user) = _authenticate.VerifyEmailLoginCode(dto);
                     //
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
                         status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
-                    response.Message = message;                   
+                    response.Message = message;
+
+                    if (status > 0)
+                    {
+                        // create user authtoken.
+                        response.Result = new SignInResponse
+                        {
+                            Userid = user.Id,
+                            Email = user.Email,
+                            Firstname = user.FirstName,
+                            Lastname = user.LastName,
+                            Authtoken = _tokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
+                            Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
+                            Imagepath = user.ImagePath                            
+                        };
+                       
+                    }
 
                 }
                 catch (Exception ex)
@@ -95,5 +111,28 @@ namespace GemCare.API.Controllers
             }
             return Ok(response);
         }
+
+        [HttpPost("generatenewtoken")]
+        public IActionResult GenerateNewToken([FromBody] RefreshTokenRequest request)
+        {
+            var response = new SingleResponse<RefreshTokenResponse>();
+            try
+            {
+                var authToken = _tokenGenerator.GenerateNewToken(request.Authtoken, request.Refreshtoken);
+                response.Statuscode = System.Net.HttpStatusCode.OK;
+                response.Message = "Success";
+                response.Result = new()
+                {
+                    Authtoken = authToken,
+                    Refreshtoken = request.Refreshtoken
+                };
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
+
     }
 }
