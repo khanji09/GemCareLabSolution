@@ -33,7 +33,7 @@ namespace GemCare.API.Controllers
                     {
                         response.Result = new()
                         {
-                            Pendingjobs = summary.PendingJobs,
+                            Unallocatedjobs = summary.UnallocatedJobs,
                             Allocatedjobs = summary.AllocatedJobs,
                             Completedjobs = summary.CompletedJobs,
                             Cancelledjobs = summary.CancelledJobs

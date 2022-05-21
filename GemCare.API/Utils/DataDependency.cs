@@ -17,6 +17,8 @@ namespace GemCare.API.Utils
             services.AddTransient<IBookingRepository, BookingRepository>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IImageSliderRepository, ImageSliderRepository>();
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<IDashboardRepository, DashboardRepository>();
             return services;
         }
     }

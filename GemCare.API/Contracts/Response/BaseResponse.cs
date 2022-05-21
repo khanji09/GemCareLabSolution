@@ -21,6 +21,13 @@ namespace GemCare.API.Contracts.Response
     {
         public List<TResponse> Result { get; set; }
     }
+
+    public interface IPagedResponse<TResponse> : IListResponse<TResponse>
+    {
+        int Totalrecords { get; set; }
+        int Totalpages { get; set; }
+    }
+
     public class BaseResponse : IBaseResponse
     {
         public HttpStatusCode Statuscode { get; set; }
@@ -42,6 +49,16 @@ namespace GemCare.API.Contracts.Response
         public string Message { get; set; }
         public bool Haserror { get; set; }
         public List<TResponse> Result { get; set; }
+    }
+
+    public class PagedResponse<TResponse> : IPagedResponse<TResponse>
+    {
+        public int Totalrecords { get; set; }
+        public int Totalpages { get; set; }
+        public List<TResponse> Result { get; set; }
+        public HttpStatusCode Statuscode { get; set; }
+        public string Message { get; set; }
+        public bool Haserror { get; set; }
     }
 
     public static class ResponseExtension

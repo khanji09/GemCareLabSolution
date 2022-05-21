@@ -10,5 +10,6 @@ namespace GemCare.Data.Interfaces
     public interface IDashboardRepository
     {
         (int status, string message, JobsSummary summary) GetJobsSummary();
+        (int status, string message, List<AppUser> technicians) GetTechnicians();
     }
 }
