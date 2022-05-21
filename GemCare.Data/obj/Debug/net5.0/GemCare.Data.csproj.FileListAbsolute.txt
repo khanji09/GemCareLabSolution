@@ -21,3 +21,4 @@ F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\
 F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.dll
 F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\ref\GemCare.Data.dll
 F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.pdb
+F:\Working_Project_Trots\GemCareLab\GemCareGitHub\GemCare.Data\obj\Debug\net5.0\GemCare.Data.csproj.AssemblyReference.cache

@@ -102,6 +102,7 @@ namespace GemCare.Data.Repository
                 sqlCommand.Parameters.AddWithValue("@pEmail", basicInfo.Email);
                 sqlCommand.Parameters.AddWithValue("@pPasswordHash", passwordHash);
                 sqlCommand.Parameters.AddWithValue("@pPasswordSalt", passwordSalt);
+                sqlCommand.Parameters.AddWithValue("@pMobile", basicInfo.Mobile);
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -254,40 +255,41 @@ namespace GemCare.Data.Repository
             AppUser appUser = null;
             try
             {
-                var (isValid, message) = IsValidCredentials(email, password, true);
-                if (isValid)
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
                 {
-                    using var dbConnection = new SqlConnection(GetConnectionString());
-                    dbConnection.Open();
-                    var sqlCommand = new SqlCommand
-                    {
-                        Connection = dbConnection,
-                        CommandText = "spAdminLogin",
-                        CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
-                        CommandType = CommandType.StoredProcedure
-                    };
+                    Connection = dbConnection,
+                    CommandText = "spAdminLogin",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
 
-                    sqlCommand.Parameters.AddWithValue("@pEmail", email);
+                sqlCommand.Parameters.AddWithValue("@pEmail", email);
 
-                    SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    sqlCommand.Parameters.Add(errCodeParam);
-                    SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    sqlCommand.Parameters.Add(errMessageParam);
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                var sqlAdapter = new SqlDataAdapter(sqlCommand);
+                sqlAdapter.Fill(dt);
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+                if (errorCode == 1)
+                {
+                    DataRow row = dt.Rows[0];
                     //
-                    var sqlAdapter = new SqlDataAdapter(sqlCommand);
-                    sqlAdapter.Fill(dt);
-                    //
-                    errorCode = int.Parse(errCodeParam.Value.ToString());
-                    errorMessage = errMessageParam.Value.ToString();
-                    if (errorCode == 1)
+                    var isValidPassword = HashPassword.VerifyPasswordHash(password, (byte[])row["PasswordHash"], (byte[])row["PasswordSalt"]);
+                    if (isValidPassword)
                     {
-                        DataRow row = dt.Rows[0];
                         appUser = new AppUser
                         {
                             Id = int.Parse(row["UserId"].ToString()),
@@ -299,11 +301,11 @@ namespace GemCare.Data.Repository
                             EmailCode = int.Parse(row["EmailCode"].ToString())
                         };
                     }
-                }
-                else
-                {
-                    errorCode = -1;
-                    errorMessage = message;
+                    else
+                    {
+                        errorCode = -1;
+                        errorMessage = "Incorrect login credentials provided. Please try again.";
+                    }
                 }
             }
             catch
