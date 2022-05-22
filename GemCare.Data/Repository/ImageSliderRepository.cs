@@ -66,7 +66,8 @@ namespace GemCare.Data.Repository
                             CreatedOn = DateTime.Parse(row["CreatedOn"].ToString()),
                             IsDeleted = bool.Parse(row["IsDeleted"].ToString()),
                             IsForMobile = bool.Parse(row["IsForMobile"].ToString()),
-                            UpdatedOn = DateTime.Parse(row["UpdatedOn"].ToString())
+                            UpdatedOn = DateTime.Parse(row["UpdatedOn"].ToString()),
+                            ShortDescription = row["ShortDescription"].ToString()
                         });
                     }
                 }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GemCare.Data.Repository
 {
-    public class BookingRepository: BaseRepository,IBookingRepository
+    public class BookingRepository : BaseRepository, IBookingRepository
     {
         private int _status;
         private string _message;
@@ -20,7 +20,7 @@ namespace GemCare.Data.Repository
         {
         }
 
-        public (int status, string message,int bookingid) AddBooking(BookingDTO model)
+        public (int status, string message, int bookingid) AddBooking(BookingDTO model)
         {
             int _booking_id = 0;
             try
@@ -63,16 +63,152 @@ namespace GemCare.Data.Repository
                 };
                 sqlCommand.Parameters.Add(errMessageParam);
                 //
-               sqlCommand.ExecuteNonQuery();
+                sqlCommand.ExecuteNonQuery();
                 //
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
                 _booking_id = int.Parse(_bookingid.Value.ToString());
-                
+
             }
             catch { throw; }
             // return data.
             return (_status, _message, _booking_id);
+        }
+
+        public (int status, string message, List<UserBookingDTO> bookings) UserCompletedBookings(int userid)
+        {
+            List<UserBookingDTO> toreturn = new List<UserBookingDTO>();
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spUserCompletedBookings",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@UserId", userid);
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                SqlDataAdapter da = new SqlDataAdapter(sqlCommand);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                //
+                _status = int.Parse(errCodeParam.Value.ToString());
+                _message = errMessageParam.Value.ToString();
+                DateTime _date = DateTime.Now.Date;
+                if (_status > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        toreturn.Add(new UserBookingDTO()
+                        {
+                            Address = row["Address"].ToString(),
+                            BookingId = int.Parse(row["BookingId"].ToString()),
+                            CreatedOn = DateTime.Parse(row["CreatedOn"].ToString()),
+                            CustomerName = row["CustomerName"].ToString(),
+                            Email = row["Email"].ToString(),
+                            ImagePath = row["ImagePath"].ToString(),
+                            MobileNumber = row["MobileNumber"].ToString(),
+                            PaidAmount = int.Parse(row["PaidAmount"].ToString()),
+                            ExpectedDate = DateTime.TryParse(row["ExpectedDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
+                            RequiredDate = DateTime.TryParse(row["RequiredDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
+                            PostalCode = row["PostalCode"].ToString(),
+                            ServiceName = row["ServiceName"].ToString(),
+                            UserId = int.Parse(row["UserId"].ToString()),
+                            WorkDescription = row["WorkDescription"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception ae)
+            {
+                _status = -1;
+                _message = ae.Message;
+            }
+            // return data.
+            return (_status, _message, toreturn);
+        }
+
+        public (int status, string message, List<UserBookingDTO> bookings) UserUpComingBookings(int userid)
+        {
+            List<UserBookingDTO> toreturn = new List<UserBookingDTO>();
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spUserUpComingBookings",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@UserId", userid);
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                SqlDataAdapter da = new SqlDataAdapter(sqlCommand);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                //
+                _status = int.Parse(errCodeParam.Value.ToString());
+                _message = errMessageParam.Value.ToString();
+                DateTime _date = DateTime.Now.Date;
+                if (_status > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        toreturn.Add(new UserBookingDTO()
+                        {
+                            Address = row["Address"].ToString(),
+                            BookingId = int.Parse(row["BookingId"].ToString()),
+                            CreatedOn = DateTime.Parse(row["CreatedOn"].ToString()),
+                            CustomerName = row["CustomerName"].ToString(),
+                            Email = row["Email"].ToString(),
+                            ImagePath = row["ImagePath"].ToString(),
+                            MobileNumber = row["MobileNumber"].ToString(),
+                            PaidAmount = int.Parse(row["PaidAmount"].ToString()),
+                            PostalCode = row["PostalCode"].ToString(),
+                            ExpectedDate = DateTime.TryParse(row["ExpectedDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
+                            RequiredDate = DateTime.TryParse(row["RequiredDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
+                            ServiceName = row["ServiceName"].ToString(),
+                            UserId = int.Parse(row["UserId"].ToString()),
+                            WorkDescription = row["WorkDescription"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception ae)
+            {
+                _status = -1;
+                _message = ae.Message;
+            }
+            // return data.
+            return (_status, _message, toreturn);
         }
     }
 }

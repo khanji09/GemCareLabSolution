@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GemCare.API.Utils;
 using GemCare.API.Contracts.Response;
+using Stripe;
 
 namespace GemCare.API
 {
@@ -70,6 +71,7 @@ namespace GemCare.API
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "GemCare.API v1"));
             // enable cors
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
             app.UseCors("CorsPolicy");
             //
             app.UseAuthorization();

@@ -27,4 +27,22 @@ namespace GemCare.Data.DTOs
         public string PostalCode { get; set; }
         public string MobileNumber { get; set; }
     }
+
+    public class UserBookingDTO
+    {
+        public int BookingId { get; set; }
+        public string CustomerName { get; set; }
+        public string ServiceName { get; set; }
+        public string Email { get; set; }
+        public string MobileNumber { get; set; }
+        public string PostalCode { get; set; }
+        public string Address { get; set; }
+        public string WorkDescription { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime? RequiredDate { get; set; }
+        public DateTime? ExpectedDate { get; set; }
+        public int UserId { get; set; }
+        public int PaidAmount { get; set; }
+        public string ImagePath { get; set; }
+    }
 }

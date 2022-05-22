@@ -10,5 +10,7 @@ namespace GemCare.Data.Interfaces
      public interface IBookingRepository
     {
         (int status, string message,int bookingid) AddBooking(BookingDTO model);
+        (int status, string message, List<UserBookingDTO> bookings) UserCompletedBookings(int userid);
+        (int status, string message, List<UserBookingDTO> bookings) UserUpComingBookings(int userid);
     }
 }
