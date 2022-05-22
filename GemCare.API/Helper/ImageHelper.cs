@@ -10,7 +10,8 @@ namespace GemCare.API.Helper
     public interface IImageHelper
     {
         Task<string> UploadBookingImage(IFormFile file,int userid);
-        
+        Task<string> UploadProfileImage(IFormFile file, int userid);
+
     }
     public class ImageHelper : IImageHelper
     {
@@ -32,7 +33,24 @@ namespace GemCare.API.Helper
             await file.CopyToAsync(fileStream);
             return imagePath;
         }
-      
+
+        public async Task<string> UploadProfileImage(IFormFile file, int userid)
+        {
+            string guid = Guid.NewGuid().ToString().Replace("-", "");
+            if (file == null) throw new ArgumentNullException("Please select file to upload");
+            if (file.Length == 0) throw new ArgumentException("Please select valid file to upload");
+            if (!IsValidMediaFile(file)) throw new Exception("Invalid file");
+            //
+            string fileExt = Path.GetExtension(file.FileName.ToLower());
+            string directoryPath = $"Uploads/Images/Profile/{userid}/";
+            var directoryInfo = Directory.CreateDirectory(directoryPath);
+            string imagePath, fileName;
+            fileName = $"img_{guid}{fileExt}";
+            imagePath = $"{directoryPath}/{fileName}";
+            using var fileStream = new FileStream(imagePath, FileMode.Create);
+            await file.CopyToAsync(fileStream);
+            return imagePath;
+        }
         private bool IsValidMediaFile(IFormFile fileToUpload)
         {
             var videoExtension = fileToUpload.FileName.Split('.');

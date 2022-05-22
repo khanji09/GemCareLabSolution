@@ -42,5 +42,31 @@ namespace GemCare.API.Controllers
             }
             return Ok(response);
         }
+
+        [HttpPost("uploadprofileimage")]
+        public async Task<IActionResult> UploadProfileImage([FromForm] UserProfileImageRequest request)
+        {
+            ProfileImageUploadResponse response = new();
+            try
+            {
+                if (IsValidBearerRequest)
+                {
+                    var imagePath = await _imageHelper.UploadProfileImage(request.Profileimage, request.Userid);
+                    //
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = "Success";
+                    response.ImagePath = imagePath;
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.APIKEY_ERRMESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
     }
 }

@@ -13,8 +13,8 @@ namespace GemCare.Data.Repository
 {
     public class PaymentRepository : BaseRepository, IPaymentRepository
     {
-        private int errorCode;
-        private string errorMessage;
+        //private int errorCode;
+        //private string errorMessage;
         public PaymentRepository(IConfiguration configuration) : base(configuration)
         {
         }
