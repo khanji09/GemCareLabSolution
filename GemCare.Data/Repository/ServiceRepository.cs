@@ -30,7 +30,7 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spGetSliderImages",
+                    CommandText = "spGetAllServices",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
@@ -89,12 +89,12 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spGetSliderImages",
+                    CommandText = "spGetServiceById",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
 
-
+                sqlCommand.Parameters.AddWithValue("@pServiceId", serviceId);
 
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {

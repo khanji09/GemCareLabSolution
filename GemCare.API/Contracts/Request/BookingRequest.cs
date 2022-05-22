@@ -18,4 +18,7 @@ namespace GemCare.API.Contracts.Request
         [Required]
         public string Imagepath { get; set; }
     }
+
+
+
 }

@@ -12,10 +12,10 @@ namespace GemCare.API.Controllers
 {
     public class SliderController : BaseApiController
     {
-        private readonly IGeneralRepository _generalRepository;
-        public SliderController(IGeneralRepository generalRepository)
+        private readonly IImageSliderRepository _ImageSliderRepository;
+        public SliderController(IImageSliderRepository imageSliderRepository)
         {
-            _generalRepository = generalRepository;
+            _ImageSliderRepository = imageSliderRepository;
         }
 
         [HttpGet("GetSlider/{ismobile}")]
@@ -27,17 +27,16 @@ namespace GemCare.API.Controllers
             };
             if (IsValidApiKeyRequest)
             {
-                var (status, message, images) = _generalRepository.GetSliderImages(ismobile);
+                var (status, message, Sliderimages) = _ImageSliderRepository.GetSliderImages(ismobile);
                 response.Statuscode = 1 == status ? HttpStatusCode.OK : HttpStatusCode.NotFound;
                 response.Message = message;
-                if (images?.Count > 0)
+                if (Sliderimages?.Count > 0)
                 {
-                    response.Result = (from img in images
+                    response.Result = (from img in Sliderimages
                                        select new SliderResponse()
                                        {
                                            Imageurl = img.ImageUrl,
-                                           Shortdescription = img.ShortDescription
-
+                                           Shortdescription =img.ShortDescription
                                        }).ToList();
                 }
             }
