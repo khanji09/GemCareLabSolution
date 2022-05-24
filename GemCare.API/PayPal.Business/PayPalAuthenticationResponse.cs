@@ -1,4 +1,4 @@
-﻿namespace GemCare.API.Contracts.Response
+﻿namespace GemCare.API.PayPal.Business
 {
     public class PayPalAuthenticationResponse
     {
@@ -8,6 +8,7 @@
         public string app_id { get; set; }
         public int expires_in { get; set; }
         public string nonce { get; set; }
-    }  
+        public string bearer_access_token { get; set; }
+    }
 
 }
