@@ -38,6 +38,7 @@ namespace GemCare.API
                         .AllowAnyHeader());
             });
             //
+         
             services.AddApplicationDependency();
             services.AddDataDependency();
             services.AddControllers()
