@@ -1,4 +1,5 @@
-﻿using GemCare.Data.Interfaces;
+﻿using GemCare.API.PayPal.Business;
+using GemCare.Data.Interfaces;
 using GemCare.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -20,6 +21,7 @@ namespace GemCare.API.Utils
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IDashboardRepository, DashboardRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IPayPalService, PayPalService>();
             return services;
         }
     }
