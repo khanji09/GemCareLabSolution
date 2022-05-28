@@ -28,7 +28,7 @@ namespace GemCare.API.Controllers
             {
                 try
                 {
-                    CustomerBasicInfo basicInfo = new CustomerBasicInfo
+                    CustomerBasicInfo basicInfo = new()
                     {
                         FirstName = request.Firstname,
                         LastName = request.Lastname,

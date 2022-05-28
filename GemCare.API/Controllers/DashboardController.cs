@@ -55,7 +55,40 @@ namespace GemCare.API.Controllers
         [HttpGet("alljobs")]
         public IActionResult AllJobsGraphData(string filter)
         {
-            return Ok();
+            IListResponse<DashboardAllJobsResponse> response = new ListResponse<DashboardAllJobsResponse>();
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    var (status, message, jobsCount) = _dashboardRepository.GetAllJobsCountByMWY(filter);
+                    response.Statuscode = 1 == status ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                    if (jobsCount?.Count > 0)
+                    {
+                        response.Result = new List<DashboardAllJobsResponse>();
+                        jobsCount.ForEach(item =>
+                        {
+                            response.Result.Add(new DashboardAllJobsResponse
+                            {
+                                Name = item.ReturnName,
+                                Allocatedjobs = item.AllocatedJobs,
+                                Unallocatedjobs = item.UnallocatedJobs,
+                                Completedjobs = item.CompletedJobs,
+                                Cancelledjobs = item.CancelledJobs
+                            });
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            return Ok(response);
         }
     }
 }

@@ -50,11 +50,10 @@ namespace GemCare.API.Controllers
                            // Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
                             Imagepath = user.ImagePath,
                             emailcode = user.EmailCode,
-                            smsotp = user.SMSOTP
+                            //smsotp = user.SMSOTP
                         };
                       bool emailSent=  _emailService.SendLoginCode(user.Email, user.EmailCode.ToString());
                     }
-
                 }
                 catch (Exception ex)
                 {

@@ -16,7 +16,11 @@ namespace GemCare.API.Contracts.Response
     public class DashboardAllJobsResponse
     {
         public string Name { get; set; }
-        public JobsSummaryResponse Summary { get; set; }
+        //public JobsSummaryResponse Summary { get; set; }
+        public int Unallocatedjobs { get; set; }
+        public int Allocatedjobs { get; set; }
+        public int Cancelledjobs { get; set; }
+        public int Completedjobs { get; set; }
     }
 
     public class TechnicianResponse
