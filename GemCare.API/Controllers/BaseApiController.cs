@@ -52,11 +52,11 @@ namespace GemCare.API.Controllers
                 {
                     Request.Headers.TryGetValue(bearerHeaderParam, out var authToken);
                     TokenGenerator _tokenGenerator = new TokenGenerator(Configuration, EncHelper);
-                    var (isValid, isExpired, message) = _tokenGenerator.ValidateToken(authToken);
+                    var (isValid, isExpired, message) = _tokenGenerator.ValidateToken(authToken.ToString().Split(' ')[1]);
                     _isValidToken = isValid;
                     if(isValid)
                     {
-                        User_Id = _tokenGenerator.GetUserId(authToken);
+                        User_Id = _tokenGenerator.GetUserId(authToken.ToString().Split(' ')[1]);
                     }
                     else
                     {

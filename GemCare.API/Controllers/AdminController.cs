@@ -1,6 +1,7 @@
 ﻿using GemCare.API.Common;
 using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
+using GemCare.Data.DTOs;
 using GemCare.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -161,6 +162,38 @@ namespace GemCare.API.Controllers
                 response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
             }
             return Ok(response);
+        }
+
+        [HttpPost("technician")]
+        public IActionResult CreateTechnician(TechnicianCreateRequest request)
+        {
+            IBaseResponse response = new BaseResponse();
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    UserBasicInfo basicInfo = new()
+                    {
+                        FirstName = request.Firstname,
+                        LastName = request.Lastname,
+                        Email = request.Email,
+                        Password = request.Password,
+                        Mobile = request.Mobile
+                    };
+                    var (status, message) = _dashboardRepository.TechnicianRegistration(basicInfo);
+                    response.Statuscode = 1 == status ? System.Net.HttpStatusCode.Created : System.Net.HttpStatusCode.ExpectationFailed;
+                    response.Message = message;
+                }
+                catch(Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            return Ok();
         }
     }
 }

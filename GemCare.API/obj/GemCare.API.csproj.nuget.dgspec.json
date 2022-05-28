@@ -51,9 +51,17 @@
               "target": "Package",
               "version": "[5.0.17, )"
             },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[39.86.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "System.Net.Http.Formatting.Extension": {
+              "target": "Package",
+              "version": "[5.2.3, )"
             }
           },
           "imports": [

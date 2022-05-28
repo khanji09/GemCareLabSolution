@@ -11,5 +11,7 @@ namespace GemCare.Data.Interfaces
     {
         (int status, string message, JobsSummary summary) GetJobsSummary();
         (int status, string message, List<AppUser> technicians) GetTechnicians();
+        (int status, string message, List<AllJobsCountByMWY> jobsCount) GetAllJobsCountByMWY(string filter);
+        (int status, string message) TechnicianRegistration(UserBasicInfo basicInfo);
     }
 }
