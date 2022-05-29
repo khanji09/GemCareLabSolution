@@ -6,6 +6,7 @@ namespace GemCare.API.PayPal.Business.Request
     public class CreateOrderRequest
     {
         public string intent { get; set; }
+        public string processing_instruction { get; set; }
         public Purchase_Units[] purchase_units { get; set; }
         public Application_Context application_context { get; set; }
     }
@@ -52,5 +53,23 @@ namespace GemCare.API.PayPal.Business.Request
     {
         public string currency_code { get; set; }
         public string value { get; set; }
+    }
+
+    //*******************************//
+    // capture payment request
+    //******************************//
+    public class PayPalCapturePaymentRequest
+    {
+        public string Orderid { get; set; }
+        public string Token { get; set; }
+        public string Payerid { get; set; }
+        public string PayPalrequestid { get; set; }
+
+    }
+    public class AuthorizePaymentRequest
+    {
+        public string OrderId { get; set; }
+        public string PayPalRequestId { get; set; }
+
     }
 }

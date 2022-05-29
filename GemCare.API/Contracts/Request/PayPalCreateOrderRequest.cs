@@ -2,8 +2,8 @@
 {
     public class PayPalCreateOrderRequest
     {
-        public int ServiceId { get; set; }
-        public string Servicename { get; set; }
+     
+        public int BookingId { get; set; }
         public double Amount { get; set; }
         public string Currencycode { get; set; }
         public string Returnurl { get; set; }
