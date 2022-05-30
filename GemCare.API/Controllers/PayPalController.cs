@@ -149,7 +149,7 @@ namespace GemCare.API.Controllers
                 {
                     response.Message = "success";
                     response.Result = _payPalService.CapturePayment(model);
-                    if (response.Result != null && string.IsNullOrEmpty(response.Result.status.Trim().ToUpper()) &&
+                    if (response.Result != null && !string.IsNullOrEmpty(response.Result.status.Trim().ToUpper()) &&
                         string.Equals(response.Result.status.Trim().ToUpper(), "COMPLETED"))
                     {
                         (int _status, string _message) = _paymentRepository.UpdatePayPalPaymentInfo(
