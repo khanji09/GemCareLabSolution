@@ -315,5 +315,72 @@ namespace GemCare.Data.Repository
 
             return (errorCode, errorMessage, appUser);
         }
+
+        public (int status, string message, AppUser user) TechnicianLogin(string email, string password)
+        {
+            DataTable dt = new();
+            AppUser appUser = null;
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spTechnicianLogin",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@pEmail", email);
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                var sqlAdapter = new SqlDataAdapter(sqlCommand);
+                sqlAdapter.Fill(dt);
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+                if (errorCode == 1)
+                {
+                    DataRow row = dt.Rows[0];
+                    //
+                    var isValidPassword = HashPassword.VerifyPasswordHash(password, (byte[])row["PasswordHash"], (byte[])row["PasswordSalt"]);
+                    if (isValidPassword)
+                    {
+                        appUser = new AppUser
+                        {
+                            Id = int.Parse(row["UserId"].ToString()),
+                            FirstName = row["FirstName"].ToString(),
+                            LastName = row["LastName"].ToString(),
+                            UserRole = row["UserRole"].ToString(),
+                            ImagePath = row["ImagePath"].ToString(),
+                            SMSOTP = int.Parse(row["SMSOTP"].ToString()),
+                            EmailCode = int.Parse(row["EmailCode"].ToString())
+                        };
+                    }
+                    else
+                    {
+                        errorCode = -1;
+                        errorMessage = "Incorrect login credentials provided. Please try again.";
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            return (errorCode, errorMessage, appUser);
+        }
     }
 }

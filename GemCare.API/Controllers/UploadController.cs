@@ -8,22 +8,31 @@ using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
 using GemCare.Data.Interfaces;
 using GemCare.API.Helper;
+using Microsoft.AspNetCore.Cors;
+using GemCare.API.Interfaces;
+
 namespace GemCare.API.Controllers
 {
-    public class UploadController : BaseApiController
+    [EnableCors("CorsPolicy")]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UploadController : ControllerBase
     {
         private readonly IImageHelper _imageHelper;
-        public UploadController(IImageHelper imageHelper)
+        private readonly ITokenGenerator _tokenGenerator;
+        public UploadController(IImageHelper imageHelper, ITokenGenerator tokenGenerator)
         {
             _imageHelper = imageHelper;
+            _tokenGenerator = tokenGenerator;
         }
+
         [HttpPost("uploadbookingimage")]
         public async Task<IActionResult> UploadBookingImage([FromForm] BookingImageUploadRequest request)
         {
             BookingImageUploadResponse response = new();
             try
             {
-                if (IsValidBearerRequest)
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
                 {
                     var documentPath = await _imageHelper.UploadBookingImage(request.bookingimage,request.Userid);
                     //
@@ -33,7 +42,7 @@ namespace GemCare.API.Controllers
                 }
                 else
                 {
-                    response.ToHttpForbiddenResponse(AppConstants.APIKEY_ERRMESSAGE);
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
                 }
             }
             catch (Exception ex)
@@ -49,7 +58,7 @@ namespace GemCare.API.Controllers
             ProfileImageUploadResponse response = new();
             try
             {
-                if (IsValidBearerRequest)
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
                 {
                     var imagePath = await _imageHelper.UploadProfileImage(request.Profileimage, request.Userid);
                     //
@@ -59,7 +68,7 @@ namespace GemCare.API.Controllers
                 }
                 else
                 {
-                    response.ToHttpForbiddenResponse(AppConstants.APIKEY_ERRMESSAGE);
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
                 }
             }
             catch (Exception ex)

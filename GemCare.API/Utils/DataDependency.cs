@@ -22,6 +22,7 @@ namespace GemCare.API.Utils
             services.AddTransient<IDashboardRepository, DashboardRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IPayPalService, PayPalService>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
             return services;
         }
     }

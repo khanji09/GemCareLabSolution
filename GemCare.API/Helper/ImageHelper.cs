@@ -24,7 +24,7 @@ namespace GemCare.API.Helper
             if (!IsValidMediaFile(file)) throw new Exception("Invalid file");
             //
             string fileExt = Path.GetExtension(file.FileName.ToLower());
-            string directoryPath = $"Uploads/Images/Booking/{userid}/";
+            string directoryPath = $"Uploads/Images/Booking/{userid}";
             _ = Directory.CreateDirectory(directoryPath);
             string imagePath, fileName;
             fileName = $"img_{guid}{fileExt}";
@@ -42,7 +42,7 @@ namespace GemCare.API.Helper
             if (!IsValidMediaFile(file)) throw new Exception("Invalid file");
             //
             string fileExt = Path.GetExtension(file.FileName.ToLower());
-            string directoryPath = $"Uploads/Images/Profile/{userid}/";
+            string directoryPath = $"Uploads/Images/Profile/{userid}";
             var directoryInfo = Directory.CreateDirectory(directoryPath);
             string imagePath, fileName;
             fileName = $"img_{guid}{fileExt}";

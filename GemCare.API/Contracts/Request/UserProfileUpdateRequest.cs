@@ -12,7 +12,7 @@ namespace GemCare.API.Contracts.Request
         public string Gender { get; set; }
         public DateTime DOB { get; set; }
     }
-    public class UserProfileImageRequest
+    public class UserProfileImageRequest : BaseAuthTokenRequest
     {
         public int Userid { get; set; }
         public IFormFile Profileimage { get; set; }
