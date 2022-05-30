@@ -30,6 +30,9 @@ namespace GemCare.API.PayPal.Business
                 {
                     ["grant_type"] = "client_credentials"
                 };
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                //ServicePointManager.Expect100Continue = false;
 
                 request.Content = new FormUrlEncodedContent(form);
 

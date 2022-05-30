@@ -10,5 +10,7 @@ namespace GemCare.Data.Repository
     public interface IPaymentRepository
     {
         (int status, string message) SaveBookingPaymentInfo(PaymentDTO paymentInfo);
+        (int status, string message) SavePayPalPaymentInfo(PayPalPaymentDTO payPalPaymentDTO);
+        (int status, string message) UpdatePayPalPaymentInfo(UpdatePayPalInfoDTO updatePayPalPaymentDTO);
     }
 }

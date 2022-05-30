@@ -63,5 +63,92 @@ namespace GemCare.Data.Repository
             return (errorCode, errorMessage);
         }
 
+        public (int status, string message) SavePayPalPaymentInfo(PayPalPaymentDTO  payPalPaymentDTO)
+        {
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spSavePayPalPayment",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@BookingId",  payPalPaymentDTO.BookingId);
+                sqlCommand.Parameters.AddWithValue("@PaidAmount",  payPalPaymentDTO.PaidAmount);
+                sqlCommand.Parameters.AddWithValue("@OrderId", payPalPaymentDTO.OrderId);
+                sqlCommand.Parameters.AddWithValue("@PaypalRequestId", payPalPaymentDTO.PaypalRequestId);
+                
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, 200)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+            }
+            catch
+            {
+                throw;
+            }
+            //
+            return (errorCode, errorMessage);
+        }
+
+        public (int status, string message) UpdatePayPalPaymentInfo(UpdatePayPalInfoDTO updatePayPalPaymentDTO)
+        {
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spUpdatePayPalPaymentInfo",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@PayerId", updatePayPalPaymentDTO.PayerId);
+                sqlCommand.Parameters.AddWithValue("@Token", updatePayPalPaymentDTO.Token);
+                sqlCommand.Parameters.AddWithValue("@OrderId", updatePayPalPaymentDTO.OrderId);
+                sqlCommand.Parameters.AddWithValue("@PaypalRequestId", updatePayPalPaymentDTO.PaypalRequestId);
+                sqlCommand.Parameters.AddWithValue("@fee", updatePayPalPaymentDTO.fee);
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, 200)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+            }
+            catch
+            {
+                throw;
+            }
+            //
+            return (errorCode, errorMessage);
+        }
+
     }
 }

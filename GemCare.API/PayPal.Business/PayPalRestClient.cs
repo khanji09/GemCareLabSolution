@@ -15,12 +15,16 @@ namespace GemCare.API.PayPal.Business
     {
         private static PayPalConfiguration _payPalConfiguration = SiteKeys.PayPal;
         public static CreateOrderResponse createOrderResponse;
+        public static string CaptureJson;
+        public static CaptureOrderResponse captureOrderResponse;
         public static async Task<CreateOrderResponse> CreateOrder(CreateOrderRequest createOrderObject)
         {            
             HttpClient client = new HttpClient();
             string orderUrl = String.Concat(_payPalConfiguration.Url, "v2/checkout/orders");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",AccessToken.GetAccessToken());
-            client.DefaultRequestHeaders.Add("PayPal-Request-Id",Guid.NewGuid().ToString());
+            string orderGuid = Guid.NewGuid().ToString();
+            client.DefaultRequestHeaders.Add("PayPal-Request-Id",orderGuid);
+            client.DefaultRequestHeaders.Add("Prefer", "return=representation");
             client.BaseAddress = new Uri(orderUrl);          
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -35,6 +39,7 @@ namespace GemCare.API.PayPal.Business
                     var res = await response.Content.ReadAsStringAsync();//<CreateOrderResponse>().Result;
                                                                          // return createOrderResponse;
                     createOrderResponse = JsonConvert.DeserializeObject<CreateOrderResponse>(res);
+                    createOrderResponse.PayPalRequestId = orderGuid;
                     return createOrderResponse;
                 }
             }
@@ -42,26 +47,57 @@ namespace GemCare.API.PayPal.Business
             return null;
         }
 
-        //public static async Task<T> Post(JObject jobject, string url, string mediaType = null)
-        //{
-           
-        //    HttpClient client = new HttpClient();
+        public static async Task<CaptureOrderResponse> CapturePayment(PayPalCapturePaymentRequest capturePaymentRequest)
+        {
+            HttpClient client = new HttpClient();
+            string orderUrl = String.Concat(_payPalConfiguration.Url, $"v2/checkout/orders/{capturePaymentRequest.Orderid}/capture");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken.GetAccessToken());
+            
+            client.DefaultRequestHeaders.Add("PayPal-Request-Id", capturePaymentRequest.PayPalrequestid);
+            client.BaseAddress = new Uri(orderUrl);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));           
 
-        //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken.GetAccessToken());
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            using (HttpResponseMessage response = await client.PostAsync(orderUrl, content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var res = await response.Content.ReadAsStringAsync();//<CreateOrderResponse>().Result;
+                                                                         // return createOrderResponse;
+                    captureOrderResponse = JsonConvert.DeserializeObject<CaptureOrderResponse>(res);                   
+                    return captureOrderResponse;
+                }
+            }
 
-        //    client.BaseAddress = new Uri(url);
-        //    var content = new StringContent(jobject.ToString(), Encoding.UTF8, (mediaType == null) ? "application/json" : mediaType);
+            return null;
+        }
 
-        //    using (HttpResponseMessage response = await client.PostAsync(url, content))
-        //    {
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            return response.Content.ReadAsAsync<T>().Result;
-        //        }
-        //    }
+        public static async Task<string> AuthorizePayment(AuthorizePaymentRequest authorizePaymentRequest)
+        {
+            HttpClient client = new HttpClient();
+            string orderUrl = String.Concat(_payPalConfiguration.Url, $"v2/checkout/orders/{authorizePaymentRequest.OrderId}/authorize");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken.GetAccessToken());
+            string orderGuid = Guid.NewGuid().ToString();
+            client.DefaultRequestHeaders.Add("PayPal-Request-Id", authorizePaymentRequest.PayPalRequestId);
+            client.BaseAddress = new Uri(orderUrl);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        //    return null;
-        //}
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            using (HttpResponseMessage response = await client.PostAsync(orderUrl, content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var res = await response.Content.ReadAsStringAsync();
+                    CaptureJson = JsonConvert.DeserializeObject<string>(res);
+                    return CaptureJson;
+                }
+            }
+
+            return null;
+        }
+
+
+
 
     }
 }

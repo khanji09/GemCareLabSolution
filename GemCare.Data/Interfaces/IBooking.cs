@@ -12,5 +12,6 @@ namespace GemCare.Data.Interfaces
         (int status, string message,int bookingid) AddBooking(BookingDTO model);
         (int status, string message, List<UserBookingDTO> bookings) UserCompletedBookings(int userid);
         (int status, string message, List<UserBookingDTO> bookings) UserUpComingBookings(int userid);
+        (int status, string message, BookingDetailsDTO booking) BookingDetails(int BookingId);
     }
 }
