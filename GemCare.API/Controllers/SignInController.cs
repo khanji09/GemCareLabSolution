@@ -151,7 +151,48 @@ namespace GemCare.API.Controllers
             }
             return Ok(response);
         }
-        
+
+        [HttpPost("technician")]
+        public IActionResult TechnicianSignIn([FromBody] AdminSignInRequest request)
+        {
+            var response = new SingleResponse<AdminSignInResponse>();
+            if (IsValidApiKeyRequest)
+            {
+                try
+                {
+                    var (status, message, user) = _authenticate.TechnicianLogin(request.Email, request.Password);
+                    //
+                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                        status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                    if (status > 0)
+                    {
+                        // create user authtoken.
+                        response.Result = new AdminSignInResponse
+                        {
+                            Userid = user.Id,
+                            Email = request.Email,
+                            Firstname = user.FirstName,
+                            Lastname = user.LastName,
+                            Authtoken = _tokenGenerator.GenerateAppUserJWT(user.Id, user.UserRole),
+                            Refreshtoken = EncHelper.Encrypt(user.Id.ToString()),
+                            Imagepath = user.ImagePath
+                        };
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.APIKEY_ERRMESSAGE);
+            }
+            return Ok(response);
+        }
+
         [HttpPost("generatenewtoken")]
         public IActionResult GenerateNewToken([FromBody] RefreshTokenRequest request)
         {

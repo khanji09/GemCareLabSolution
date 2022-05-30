@@ -34,7 +34,8 @@ namespace GemCare.Data.Repository
                         CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                         CommandType = CommandType.StoredProcedure
                     };
-
+                    //
+                    sqlCommand.Parameters.AddWithValue("@pFilter", filter);
                     SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                     {
                         Direction = ParameterDirection.Output
