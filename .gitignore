@@ -1546,3 +1546,16 @@ GemCare.Data/obj/Release/net5.0/ref/GemCare.Data.dll
 .vs/ProjectEvaluation/gemcarelabsolution.metadata.v2
 .vs/ProjectEvaluation/gemcarelabsolution.projects.v2
 GemCare.API/bin/Debug/net5.0/GemCare.API.deps.json
+GemCare.API/obj/Debug/net5.0/ref/GemCare.API.dll
+GemCare.API/bin/Debug/net5.0/GemCare.API.dll
+GemCare.API/bin/Debug/net5.0/GemCare.API.exe
+GemCare.API/bin/Debug/net5.0/GemCare.Data.dll
+GemCare.API/obj/GemCare.API.csproj.nuget.g.targets
+GemCare.API/obj/GemCare.API.csproj.nuget.g.props
+GemCare.API/obj/Debug/net5.0/apphost.exe
+GemCare.Data/bin/Debug/net5.0/GemCare.Data.dll
+GemCare.Data/obj/GemCare.Data.csproj.nuget.g.props
+GemCare.API/obj/Debug/net5.0/GemCare.API.dll
+GemCare.Data/obj/GemCare.Data.csproj.nuget.g.targets
+GemCare.Data/obj/Debug/net5.0/GemCare.Data.dll
+GemCare.Data/obj/Debug/net5.0/ref/GemCare.Data.dll
