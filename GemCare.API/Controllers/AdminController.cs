@@ -195,5 +195,50 @@ namespace GemCare.API.Controllers
             }
             return Ok();
         }
+
+        [HttpGet("valuationrequests")]
+        public IActionResult GetValuationRequests()
+        {
+            IListResponse<ValuationBookingResponse> response = new ListResponse<ValuationBookingResponse>
+            {
+                Result = new List<ValuationBookingResponse>()
+            };
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    var (status, message, valuationRequests) = _appointments.GetValuationRequests();
+                    response.Statuscode = status == 1 ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                    valuationRequests?.ForEach(item =>
+                    {
+                        response.Result.Add(new ValuationBookingResponse
+                        {
+                            Id = item.Id,
+                            Customerid = item.CustomerId,
+                            Customerfirstname = item.CustomerFirstName,
+                            Customerlastname = item.CustomerLastName,
+                            Servicename = item.ServiceName,
+                            Technicianid = item.TechnicianId,
+                            Techfirstname = item.TechFirstName,
+                            Techlastname = item.TechLastName,
+                            Itemdescription = item.ItemDescription,
+                            Imageurl = item.ImageUrl,
+                            Videourl = item.VideoUrl,
+                            Quotation = item.Quotation
+                        });
+                    });
+                }
+                catch(Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            return Ok(response);
+        }
     }
 }
