@@ -77,5 +77,58 @@ namespace GemCare.API.Controllers
             }
             return Ok(response);
         }
+
+        [HttpPost("uploadvaluationimage")]
+        public async Task<IActionResult> UploadValuationImage([FromForm] ValuationImageRequest request)
+        {
+            ProfileImageUploadResponse response = new();
+            try
+            {
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
+                {
+                    var imagePath = await _imageHelper.UploadValuationImage(request.file, request.Userid);
+                    //
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = "Success";
+                    response.ImagePath = imagePath;
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
+
+        [HttpPost("uploadvaluationvideo")]
+        public async Task<IActionResult> UploadValuationVideo([FromForm] ValuationImageRequest request)
+        {
+            ProfileImageUploadResponse response = new();
+            try
+            {
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
+                {
+                    var imagePath = await _imageHelper.UploadValuationImage(request.file, request.Userid);
+                    //
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = "Success";
+                    response.ImagePath = imagePath;
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
+
     }
 }
