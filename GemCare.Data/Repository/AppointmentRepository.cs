@@ -189,5 +189,71 @@ namespace GemCare.Data.Repository
 
             return (errorCode, errorMessage, appointmentList, totalPages, totalRecords);
         }
+
+        public (int status, string message, List<ValuationRequestDTO> valuationRequests) GetValuationRequests()
+        {
+            List<ValuationRequestDTO> valuationList = null;
+            DataTable dt = new();
+            //int totalPages = 0, totalRecords = 0;
+            try
+            {
+                {
+                    using var dbConnection = new SqlConnection(GetConnectionString());
+                    dbConnection.Open();
+                    var sqlCommand = new SqlCommand
+                    {
+                        Connection = dbConnection,
+                        CommandText = "spGetBookingReviews",
+                        CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    //sqlCommand.Parameters.AddWithValue("@pPageNumber", pageNumber);
+                    //sqlCommand.Parameters.AddWithValue("@pPageSize", pageSize);
+                    SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    sqlCommand.Parameters.Add(errCodeParam);
+                    SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    sqlCommand.Parameters.Add(errMessageParam);
+                    var sqlAdapter = new SqlDataAdapter(sqlCommand);
+                    sqlAdapter.Fill(dt);
+                    errorCode = int.Parse(errCodeParam.Value.ToString());
+                    errorMessage = errMessageParam.Value.ToString();
+                }
+                if (dt?.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        ValuationRequestDTO tempObj = new()
+                        {
+                            Id = int.Parse(row["Id"].ToString()),
+                            CustomerId = int.Parse(row["CustomerId"].ToString()),
+                            CustomerFirstName = row["CustomerFirstName"].ToString(),
+                            CustomerLastName = row["CustomerLastName"].ToString(),
+                            TechnicianId = int.Parse(row["TechnicianId"].ToString()),
+                            TechFirstName = row["TechFirstName"].ToString(),
+                            TechLastName = row["TechLastName"].ToString(),
+                            ServiceName = row["ServiceName"].ToString(),
+                            ItemDescription = row["ItemDescription"].ToString(),
+                            ImageUrl = row["ImageUrl"].ToString(),
+                            VideoUrl = row["VideoUrl"].ToString(),
+                            Quotation = int.Parse(row["Quotation"].ToString())
+
+                        };
+                        valuationList.Add(tempObj);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return (errorCode, errorMessage, valuationList);
+        }
     }
 }

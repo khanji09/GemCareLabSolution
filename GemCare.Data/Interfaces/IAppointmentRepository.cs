@@ -13,5 +13,6 @@ namespace GemCare.Data.Interfaces
             int pageNumber, int pageSize);
         (int status, string message) AssignJobToTechnician(int bookingId, int technicianId);
         (int status, string message, List<AppointmentDTO> appointments, int totalPages, int totalRecords) GetBookingReviews(int pageNumber, int pageSize);
+        (int status, string message, List<ValuationRequestDTO> valuationRequests) GetValuationRequests();
     }
 }
