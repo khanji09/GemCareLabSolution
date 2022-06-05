@@ -12,17 +12,17 @@ using System.Threading.Tasks;
 
 namespace GemCare.Data.Repository
 {
-    public class ServiceRepository : BaseRepository, IServiceRepository
+    public class ValuationRespository : BaseRepository, IValuationRepository
     {
-        private int _status = -1;
-        private string _message = "";
-        public ServiceRepository(IConfiguration configuration) : base(configuration)
+        private int _status;
+        private string _message;
+        public ValuationRespository(IConfiguration configuration) : base(configuration)
         {
         }
 
-        public (int status, string message, List<ServiceDTO> services) GetAllServices()
+        public (int status, string message, int ValuationId) AddValuation(ValuationDTO model)
         {
-            List<ServiceDTO> toreturn = new List<ServiceDTO>();
+            int _ValuationId = 0;
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
@@ -30,13 +30,26 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spGetAllServices",
+                    CommandText = "spAddValuation",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
 
+                sqlCommand.Parameters.AddWithValue("@CustomerId", model.CustomerId);
+                sqlCommand.Parameters.AddWithValue("@TechnicianId", model.TechnicianId);
+                sqlCommand.Parameters.AddWithValue("@ServiceId", model.ServiceId);
+                sqlCommand.Parameters.AddWithValue("@ItemDescription", model.ItemDescription);
+                sqlCommand.Parameters.AddWithValue("@ImageUrl", model.ImageUrl);
+                sqlCommand.Parameters.AddWithValue("@VideoUrl", model.VideoUrl);
+                sqlCommand.Parameters.AddWithValue("@Quotation", model.Quotation);
 
 
+                // out params
+                SqlParameter _valid = new("@ValuationID", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(_valid);
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -48,40 +61,21 @@ namespace GemCare.Data.Repository
                 };
                 sqlCommand.Parameters.Add(errMessageParam);
                 //
-                SqlDataAdapter da = new SqlDataAdapter(sqlCommand);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
+                sqlCommand.ExecuteNonQuery();
                 //
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
-
-                if (_status > 0)
-                {
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        toreturn.Add(new ServiceDTO()
-                        {
-                            Id = int.Parse(row["Id"].ToString()),
-                            ImageUrl = row["ImageUrl"].ToString(),
-                            IsDeleted = bool.Parse(row["IsDeleted"].ToString()),
-                            Description = row["Description"].ToString(),
-                            IsActive = bool.Parse(row["IsActive"].ToString()),
-                            Name = row["Name"].ToString(),
-                            Price = int.Parse(row["Price"].ToString()),
-                            ShortDescription = row["ShortDescription"].ToString()
-                        });
-                    }
-                }
+                _ValuationId = int.Parse(_valid.Value.ToString());
 
             }
             catch { throw; }
             // return data.
-            return (_status, _message, toreturn);
+            return (_status, _message, _ValuationId);
         }
 
-        public (int status, string message, ServiceDTO service) GetServiceDetail(int serviceId)
+        public (int status, string message, List<AdminValuationDTO>) GetValuationsAdmin()
         {
-            ServiceDTO toreturn = new ServiceDTO();
+            List<AdminValuationDTO> toreturn = new List<AdminValuationDTO>();
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
@@ -89,12 +83,12 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spGetServiceById",
+                    CommandText = "spGetValuationRequets_Admin",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
 
-                sqlCommand.Parameters.AddWithValue("@pServiceId", serviceId);
+
 
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
@@ -113,27 +107,30 @@ namespace GemCare.Data.Repository
                 //
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
-
+                DateTime _date = DateTime.Now.Date;
                 if (_status > 0)
                 {
                     foreach (DataRow row in dt.Rows)
                     {
-                        toreturn = new ServiceDTO()
+                        toreturn.Add(new AdminValuationDTO()
                         {
-                            Id = int.Parse(row["Id"].ToString()),
+                            Id = int.Parse(row["Id"].ToString()),                           
+                            CustomerId = int.Parse(row["CustomerId"].ToString()),
                             ImageUrl = row["ImageUrl"].ToString(),
-                            IsDeleted = bool.Parse(row["IsDeleted"].ToString()),
-                            Description = row["Description"].ToString(),
-                            IsActive = bool.Parse(row["IsActive"].ToString()),
-                            Name = row["Name"].ToString(),
-                            Price = int.Parse(row["Price"].ToString()),
-                            ShortDescription = row["ShortDescription"].ToString()
-
-                        };
+                            VideoUrl = row["VideoUrl"].ToString(),
+                            ItemDescription = row["ItemDescription"].ToString(),
+                            Quotation = int.Parse(row["Quotation"].ToString()),                           
+                            TechnicianId = int.Parse(row["TechnicianId"].ToString()),
+                            CustomerFirstName = row["CustomerFirstName"].ToString(),
+                            CustomerLastName = row["CustomerLastName"].ToString(),
+                            ServiceName = row["ServiceName"].ToString(),
+                            TechFirstName = row["TechFirstName"].ToString(),
+                            TechLastName = row["TechLastName"].ToString()
+                        });
                     }
                 }
             }
-            catch(Exception ae)
+            catch (Exception ae)
             {
                 _status = -1;
                 _message = ae.Message;
@@ -141,10 +138,9 @@ namespace GemCare.Data.Repository
             // return data.
             return (_status, _message, toreturn);
         }
-
-        public (int status, string message, List<ServiceDTO> services) GetSubServices(int serviceId)
+        public (int status, string message, List<AdminValuationDTO>) GetValuationsRequests(int userid,bool isTechnician=false)
         {
-            List<ServiceDTO> toreturn = new List<ServiceDTO>();
+            List<AdminValuationDTO> toreturn = new List<AdminValuationDTO>();
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
@@ -152,13 +148,14 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spGetSubServices",
+                    CommandText = "spGetValuationRequets",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
 
-                sqlCommand.Parameters.AddWithValue("@pServiceId", serviceId);
 
+                sqlCommand.Parameters.AddWithValue("@pUserId", userid);
+                sqlCommand.Parameters.AddWithValue("@pIsTechnician", isTechnician);
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -176,22 +173,25 @@ namespace GemCare.Data.Repository
                 //
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
-
+                DateTime _date = DateTime.Now.Date;
                 if (_status > 0)
                 {
                     foreach (DataRow row in dt.Rows)
                     {
-                        toreturn.Add(new ServiceDTO()
+                        toreturn.Add(new AdminValuationDTO()
                         {
                             Id = int.Parse(row["Id"].ToString()),
+                            CustomerId = int.Parse(row["CustomerId"].ToString()),
                             ImageUrl = row["ImageUrl"].ToString(),
-                            IsDeleted = bool.Parse(row["IsDeleted"].ToString()),
-                            Description = row["Description"].ToString(),
-                            IsActive = bool.Parse(row["IsActive"].ToString()),
-                            Name = row["Name"].ToString(),
-                            Price = int.Parse(row["Price"].ToString()),
-                            ShortDescription = row["ShortDescription"].ToString()
-
+                            VideoUrl = row["VideoUrl"].ToString(),
+                            ItemDescription = row["ItemDescription"].ToString(),
+                            Quotation = int.Parse(row["Quotation"].ToString()),
+                            TechnicianId = int.Parse(row["TechnicianId"].ToString()),
+                            CustomerFirstName = row["CustomerFirstName"].ToString(),
+                            CustomerLastName = row["CustomerLastName"].ToString(),
+                            ServiceName = row["ServiceName"].ToString(),
+                            TechFirstName = row["TechFirstName"].ToString(),
+                            TechLastName = row["TechLastName"].ToString()
                         });
                     }
                 }

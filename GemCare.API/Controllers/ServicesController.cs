@@ -37,11 +37,11 @@ namespace GemCare.API.Controllers
                 {
                     response.Result = (from service in services
                                        select new AllServicesResponse()
-                                       {                                          
+                                       {
                                            Id = service.Id,
                                            ImageUrl = service.ImageUrl,
                                            Name = service.Name,
-                                           Price = service.Price                                           
+                                           Price = service.Price
                                        }).ToList();
                 }
             }
@@ -78,6 +78,41 @@ namespace GemCare.API.Controllers
                         Price = service.Price,
                         ShortDescription = service.ShortDescription
                     };
+                }
+            }
+            else
+            {
+                response.Message = AppConstants.APIKEY_ERRMESSAGE;
+                response.Haserror = true;
+                response.Statuscode = System.Net.HttpStatusCode.NotFound;
+            }
+            return Ok(response);
+        }
+        [HttpGet("GetSubServices/{serviceid}")]
+        public IActionResult GetSubServices(int serviceid)
+        {
+            IListResponse<ServiceResponse> response = new ListResponse<ServiceResponse>()
+            {
+                Result = new List<ServiceResponse>()
+            };
+            if (IsValidApiKeyRequest)
+            {
+                (int status, string message, List<ServiceDTO> services) = _serviceRepository.GetSubServices(serviceid);
+                response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                      status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                response.Message = message;
+                if (status > 0)
+                {
+                    response.Result = (from s in services
+                                       select new ServiceResponse()
+                                       {
+                                           Description = s.Description,
+                                           Id = s.Id,
+                                           ImageUrl = s.ImageUrl,
+                                           Name = s.Name,
+                                           Price = s.Price,
+                                           ShortDescription = s.ShortDescription
+                                       }).ToList();
                 }
             }
             else

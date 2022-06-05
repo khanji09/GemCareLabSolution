@@ -11,5 +11,6 @@ namespace GemCare.Data.Interfaces
     {
         (int status, string message,List<ServiceDTO> services) GetAllServices();
         (int status, string message,ServiceDTO service) GetServiceDetail(int serviceId);
+        (int status, string message, List<ServiceDTO> services) GetSubServices(int serviceId);
     }
 }
