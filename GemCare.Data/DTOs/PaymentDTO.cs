@@ -35,4 +35,15 @@ namespace GemCare.Data.DTOs
         public string PayerId { get; set; }
         public double fee { get; set; }
     }
+
+    public class InsertUpdatePayPalInfoDTO
+    {
+        public int BookingId { get; set; }
+        public double PaidAmount { get; set; }
+        public string OrderId { get; set; }
+        public string PaypalRequestId { get; set; }
+        public string Token { get; set; }
+        public string PayerId { get; set; }
+        public double Fee { get; set; }
+    }
 }

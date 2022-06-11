@@ -3,7 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GemCare.API.Contracts.Request
 {
-    
+    public class PaymentMethodCreateRequest
+    {
+        [Required]
+        public string Stripetoken { get; set; }
+    }
         public abstract class PaymentRequest 
         {
             [Required]
@@ -14,6 +18,7 @@ namespace GemCare.API.Contracts.Request
             public string Paymentmethodid { get; set; }
 
             [Required]
+            [GreaterThanZero]
             public decimal Amount { get; set; }
         }
 

@@ -34,7 +34,7 @@ namespace GemCare.API.Controllers
             {
                 if (IsValidBearerRequest)
                 {
-                    BookingDTO booking = new BookingDTO()
+                    BookingDTO booking = new()
                     {
                         Email = model.Email,
                         Name = model.Name,
@@ -45,8 +45,8 @@ namespace GemCare.API.Controllers
                         ServiceId = model.Serviceid,
                         UserId = User_Id,
                         WorkDescription = model.Workdescription,
-                        RequiredDate = model.Requireddate
-
+                        RequiredDate = model.Requireddate,
+                        AddressNotes = model.Addressnotes
                     };
                     (int status, string message, int bookingid) = _bookingRepository.AddBooking(booking);
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :

@@ -1,4 +1,5 @@
 ﻿using GemCare.API.Common;
+using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
 using GemCare.Data.DTOs;
 using GemCare.Data.Interfaces;
@@ -124,6 +125,32 @@ namespace GemCare.API.Controllers
                 response.ToHttpExceptionResponse(ae.Message);
             }
 
+            return Ok(response);
+        }
+
+        [HttpPut("markbookingascomplete")]
+        public IActionResult MarkBookingAsComplete(BookingCompleteRequest request)
+        {
+            IBaseResponse response = new BaseResponse();
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    var (status, message) = _bookingRepository.MarkAsComplete(request.Bookingid, request.Technicianid, 
+                        request.Feedback);
+                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK
+                        : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                }
+                catch (Exception ae)
+                {
+                    response.ToHttpExceptionResponse(ae.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
             return Ok(response);
         }
     }

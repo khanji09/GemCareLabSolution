@@ -23,6 +23,7 @@ namespace GemCare.API.Controllers
             _valuationRepository = valuationRepository;
             _tokenGenerator = tokenGenerator;
         }
+
         [HttpPost("AddValuation")]
         public IActionResult AddValuation(ValuationRequest model)
         {
@@ -119,6 +120,30 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
+        [HttpPut("assign")]
+        public IActionResult AssignValuation(AssignValuationRequest request)
+        {
+            IBaseResponse response = new BaseResponse();
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    var (status, message) = _valuationRepository.AssignValuationRequest(request.Id, request.Technicianid);
+                    response.Statuscode = status == 1 ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.ExpectationFailed;
+                    response.Message = message;
+                }
+                catch(Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            return Ok(response);
+        }
+
         [HttpGet("GetValuations/{istechnician}")]
         public IActionResult GetValuations(bool istechnician)
         {
@@ -170,7 +195,5 @@ namespace GemCare.API.Controllers
 
             return Ok(response);
         }
-
-
     }
 }

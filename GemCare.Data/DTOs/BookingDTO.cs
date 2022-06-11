@@ -26,6 +26,7 @@ namespace GemCare.Data.DTOs
         public string Email { get; set; }
         public string PostalCode { get; set; }
         public string MobileNumber { get; set; }
+        public string AddressNotes { get; set; }
     }
 
     public class UserBookingDTO
