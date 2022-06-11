@@ -50,7 +50,8 @@ namespace GemCare.API.PayPal.Business
         public static async Task<CaptureOrderResponse> CapturePayment(PayPalCapturePaymentRequest capturePaymentRequest)
         {
             HttpClient client = new HttpClient();
-            string orderUrl = String.Concat(_payPalConfiguration.Url, $"v2/checkout/orders/{capturePaymentRequest.Orderid}/capture");
+            //string orderUrl = String.Concat(_payPalConfiguration.Url, $"v2/checkout/orders/{capturePaymentRequest.Orderid}/capture");
+            string orderUrl = string.Format("{0}v2/checkout/orders/{1}/capture", _payPalConfiguration.Url, capturePaymentRequest.Orderid);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken.GetAccessToken());
             
             client.DefaultRequestHeaders.Add("PayPal-Request-Id", capturePaymentRequest.PayPalrequestid);
@@ -95,9 +96,5 @@ namespace GemCare.API.PayPal.Business
 
             return null;
         }
-
-
-
-
     }
 }

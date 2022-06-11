@@ -73,6 +73,44 @@ namespace GemCare.Data.Repository
             return (_status, _message, _ValuationId);
         }
 
+        public (int status, string message) AssignValuationRequest(int id, int technicianId)
+        {
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spAssignValuationRequest",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@pValuationId", id);
+                sqlCommand.Parameters.AddWithValue("@pTechnicianId", technicianId);
+                // out params
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+            }
+            catch { throw; }
+            // return data.
+            return (errorCode, errorMessage);
+        }
+
         public (int status, string message, List<AdminValuationDTO>) GetValuationsAdmin()
         {
             List<AdminValuationDTO> toreturn = new List<AdminValuationDTO>();

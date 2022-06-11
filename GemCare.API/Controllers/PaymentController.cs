@@ -21,6 +21,50 @@ namespace GemCare.API.Controllers
         {
             _paymentRepository = paymentRepository;
         }
+
+        [HttpPost("createpaymentmethodid")]
+        public IActionResult CreatePaymentMethodId([FromBody] PaymentMethodCreateRequest request)
+        {
+            //bool isvalidrequest = true;
+            ISingleResponse<PaymentMethodCreateResponse> response = new SingleResponse<PaymentMethodCreateResponse>
+            {
+                Result = new()
+            };
+            if (IsValidBearerRequest)
+            {
+                try
+                {
+                    var paymentMethodCreateOptions = new PaymentMethodCreateOptions
+                    {
+                        Type = "card",
+                        Card = new PaymentMethodCardOptions
+                        {
+                            Token = request.Stripetoken
+                        }
+                    };
+                    var paymentMethodService = new PaymentMethodService();
+                    // stripe methods for adding customer and payment method.
+                    PaymentMethod payMethod = paymentMethodService.Create(paymentMethodCreateOptions);
+                    response.Result.Paymentmethodid = payMethod.Id;
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = AppConstants.SUCCESS_MESSAGE;
+                }
+                catch(StripeException se)
+                {
+                    response.ToHttpExceptionResponse(se.Message);
+                }
+                catch(Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            return Ok(response);
+        }
+
         [HttpPost("capturepayment")]
         public IActionResult CapturePayment([FromBody] CapturePaymentRequest request)
         {
@@ -119,6 +163,5 @@ namespace GemCare.API.Controllers
             }
             return Ok(response);
         }
-
     }
 }

@@ -118,7 +118,7 @@ namespace GemCare.API.Controllers
             {
                 response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
             }
-            return Ok();
+            return Ok(response);
         }
 
         [HttpGet("bookingreviews")]
@@ -193,7 +193,7 @@ namespace GemCare.API.Controllers
             {
                 response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
             }
-            return Ok();
+            return Ok(response);
         }
     }
 }

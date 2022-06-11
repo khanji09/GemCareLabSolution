@@ -45,7 +45,7 @@ namespace GemCare.Data.Repository
                 sqlCommand.Parameters.AddWithValue("@WorkDescription", model.WorkDescription);
                 sqlCommand.Parameters.AddWithValue("@ImagePath", model.ImagePath);
                 sqlCommand.Parameters.AddWithValue("@RequiredDate", model.RequiredDate);
-
+                sqlCommand.Parameters.AddWithValue("@pAddressNotes", model.AddressNotes);
                 // out params
                 SqlParameter _bookingid = new("@BookingID", SqlDbType.Int)
                 {
@@ -409,6 +409,46 @@ namespace GemCare.Data.Repository
             }
             // return data.
             return (errorCode, errorMessage, toreturn);
+        }
+
+        public (int status, string message) MarkAsComplete(int bookingId, int technicianId, string feedback)
+        {
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spMarkBookingAsComplete",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@pBookingId", bookingId);
+                sqlCommand.Parameters.AddWithValue("@pTechnicianId", technicianId);
+                sqlCommand.Parameters.AddWithValue("@pFeedback", feedback);
+                // out params
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                errorCode = int.Parse(errCodeParam.Value.ToString());
+                errorMessage = errMessageParam.Value.ToString();
+
+            }
+            catch { throw; }
+            // return data.
+            return (errorCode, errorMessage);
         }
     }
 }

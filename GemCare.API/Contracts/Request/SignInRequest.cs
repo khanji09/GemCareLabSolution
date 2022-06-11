@@ -10,8 +10,8 @@ namespace GemCare.API.Contracts.Request
     {
         [Required]
         public string Email { get; set; }
-        [Required]
-        public string Mobile { get; set; }
+        //[Required]
+        //public string Mobile { get; set; }
 
         [Required]
         public string Password { get; set; }

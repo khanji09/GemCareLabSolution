@@ -112,7 +112,7 @@ namespace GemCare.API.Controllers
             {
                 if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
                 {
-                    var imagePath = await _imageHelper.UploadValuationImage(request.file, request.Userid);
+                    var imagePath = await _imageHelper.UploadValuationVideo(request.file, request.Userid);
                     //
                     response.Statuscode = System.Net.HttpStatusCode.OK;
                     response.Message = "Success";

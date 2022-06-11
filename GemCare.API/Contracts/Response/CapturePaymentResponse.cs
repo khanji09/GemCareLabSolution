@@ -5,4 +5,9 @@
         public string Transactionid { get; set; }
         public string Chargeid { get; set; }
     }
+
+    public class PaymentMethodCreateResponse //: BaseResponse
+    {
+        public string Paymentmethodid { get; set; }
+    }
 }
