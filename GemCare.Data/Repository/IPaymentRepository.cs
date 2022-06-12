@@ -12,5 +12,6 @@ namespace GemCare.Data.Repository
         (int status, string message) SaveBookingPaymentInfo(PaymentDTO paymentInfo);
         (int status, string message) SavePayPalPaymentInfo(PayPalPaymentDTO payPalPaymentDTO);
         (int status, string message) UpdatePayPalPaymentInfo(UpdatePayPalInfoDTO updatePayPalPaymentDTO);
+        (int status, string message) InsertUpdatePayPalPaymentInfo(InsertUpdatePayPalInfoDTO paymentDTO);
     }
 }

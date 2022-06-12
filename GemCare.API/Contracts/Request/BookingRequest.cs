@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GemCare.API.Common;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GemCare.API.Contracts.Request
@@ -17,8 +18,17 @@ namespace GemCare.API.Contracts.Request
         public DateTime Requireddate { get; set; }
         [Required]
         public string Imagepath { get; set; }
+        public string Addressnotes { get; set; }
     }
 
+    public class BookingCompleteRequest
+    {
+        [GreaterThanZero(ErrorMessage = "Bookingid must be greater than zero")]
+        public int Bookingid { get; set; }
 
+        [GreaterThanZero(ErrorMessage = "Technicianid must be greater than zero")]
+        public int Technicianid { get; set; }
+        public string Feedback { get; set; }
+    }
 
 }

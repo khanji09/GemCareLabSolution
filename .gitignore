@@ -1586,3 +1586,16 @@ GemCare.Data/obj/Debug/net5.0/GemCare.Data.GeneratedMSBuildEditorConfig.editorco
 GemCare.Data/obj/Debug/net5.0/GemCare.Data.pdb
 GemCare.Data/obj/Debug/net5.0/ref/GemCare.Data.dll
 GemCare.Data/obj/Debug/net5.0/refint/GemCare.Data.dll
+GemCare.API/obj/Debug/net5.0/ref/GemCare.API.dll
+GemCare.API/bin/Debug/net5.0/GemCare.API.dll
+GemCare.API/bin/Debug/net5.0/GemCare.API.exe
+GemCare.API/bin/Debug/net5.0/GemCare.Data.dll
+GemCare.API/obj/GemCare.API.csproj.nuget.g.targets
+GemCare.API/obj/GemCare.API.csproj.nuget.g.props
+GemCare.API/obj/Debug/net5.0/apphost.exe
+GemCare.Data/bin/Debug/net5.0/GemCare.Data.dll
+GemCare.Data/obj/GemCare.Data.csproj.nuget.g.props
+GemCare.API/obj/Debug/net5.0/GemCare.API.dll
+GemCare.Data/obj/GemCare.Data.csproj.nuget.g.targets
+GemCare.Data/obj/Debug/net5.0/GemCare.Data.dll
+GemCare.Data/obj/Debug/net5.0/ref/GemCare.Data.dll

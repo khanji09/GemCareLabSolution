@@ -66,6 +66,14 @@ namespace GemCare.API.PayPal.Business.Request
         public string PayPalrequestid { get; set; }
 
     }
+
+    public class PayPalCapturePaymentRequest_New : PayPalCapturePaymentRequest
+    {
+        public int Bookingid { get; set; }
+        public double Amount { get; set; }
+        public string Currencycode { get; set; }
+    }
+
     public class AuthorizePaymentRequest
     {
         public string OrderId { get; set; }

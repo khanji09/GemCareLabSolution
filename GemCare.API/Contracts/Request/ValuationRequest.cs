@@ -21,4 +21,9 @@ namespace GemCare.API.Contracts.Request
         public IFormFile file { get; set; }
     }
 
+    public class AssignValuationRequest
+    {
+        public int Id { get; set; }
+        public int Technicianid { get; set; }
+    }
 }
