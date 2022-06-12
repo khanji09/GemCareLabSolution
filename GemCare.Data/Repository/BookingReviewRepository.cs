@@ -68,7 +68,7 @@ namespace GemCare.Data.Repository
                             IsRead = bool.Parse(row["IsRead"].ToString()),
                             ReviewPoints = int.Parse(row["ReviewPoints"].ToString()),
                             UpdatedOn = DateTime.Parse(row["UpdatedOn"].ToString())
-                        }) ;
+                        });
                     }
                 }
             }
@@ -98,6 +98,7 @@ namespace GemCare.Data.Repository
                 sqlCommand.Parameters.AddWithValue("@Id", model.Id);
                 sqlCommand.Parameters.AddWithValue("@ReviewPoints", model.ReviewPoints);
                 sqlCommand.Parameters.AddWithValue("@Comments", model.Comments);
+                sqlCommand.Parameters.AddWithValue("@IsRead", model.IsRead);
                 // out params
                 SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
                 {
@@ -119,5 +120,68 @@ namespace GemCare.Data.Repository
             // return data.
             return (errorCode, errorMessage);
         }
+
+        public (int status, string message, UnReadBookingReviewDTO review) GetUnReadBookingReviewByCustomer(int userid)
+        {
+            UnReadBookingReviewDTO toreturn = new UnReadBookingReviewDTO();
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spGetUnreadBookingReviewByCustomer",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                sqlCommand.Parameters.AddWithValue("@UserId", userid);
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                SqlDataAdapter da = new SqlDataAdapter(sqlCommand);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                //
+                _status = int.Parse(errCodeParam.Value.ToString());
+                _message = errMessageParam.Value.ToString();
+                DateTime _date = DateTime.Now.Date;
+                if (_status > 0 && dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    toreturn = new UnReadBookingReviewDTO()
+                    {
+                        Id = int.Parse(row["Id"].ToString()),
+                        BookingId = int.Parse(row["BookingId"].ToString()),
+                        Comments = row["Comments"].ToString(),
+                        CreatedOn = DateTime.Parse(row["CreatedOn"].ToString()),
+                        IsRead = bool.Parse(row["IsRead"].ToString()),
+                        ReviewPoints = int.Parse(row["ReviewPoints"].ToString()),
+                        UpdatedOn = DateTime.Parse(row["UpdatedOn"].ToString()),
+                        ServiceName = row["ServiceName"].ToString(),
+                        ShortDescription = row["ShortDescription"].ToString()
+                    };
+
+                }
+            }
+            catch (Exception ae)
+            {
+                _status = -1;
+                _message = ae.Message;
+            }
+            // return data.
+            return (_status, _message, toreturn);
+        }
+
     }
 }

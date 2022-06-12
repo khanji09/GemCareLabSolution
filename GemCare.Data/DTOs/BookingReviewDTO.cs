@@ -16,4 +16,17 @@ namespace GemCare.Data.DTOs
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
     }
+
+    public class UnReadBookingReviewDTO
+    {
+        public int Id { get; set; }
+        public int BookingId { get; set; }
+        public int ReviewPoints { get; set; }
+        public string Comments { get; set; }
+        public bool IsRead { get; set; }
+        public string ServiceName { get; set; }
+        public string ShortDescription { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+    }
 }

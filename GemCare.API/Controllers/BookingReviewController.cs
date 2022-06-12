@@ -70,6 +70,52 @@ namespace GemCare.API.Controllers
         }
 
 
+        [HttpGet("GetUnReadReview")]
+        public IActionResult GetUnReadReview()
+        {
+            var response = new SingleResponse<UnReadBookingReviewResponse>()
+            {
+                Result = new UnReadBookingReviewResponse()
+            };
+            response.Result= new UnReadBookingReviewResponse();
+            try
+            {
+                if (IsValidBearerRequest)
+                {
+
+                    (int status, string message, UnReadBookingReviewDTO review) = _bookingReviewRepository.GetUnReadBookingReviewByCustomer(User_Id);
+                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                       status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                    if (review!=null)
+                    {
+                        response.Result = new UnReadBookingReviewResponse()
+                        {
+                            Bookingid = review.BookingId,
+                            Comments = review.Comments,
+                            Id = review.Id,
+                            IsRead = review.IsRead,
+                            ReviewPoints = review.ReviewPoints,
+                            Servicename = review.ServiceName,
+                            Shortdescription = review.ShortDescription
+                        };
+                    }
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ae)
+            {
+                response.Message = ae.Message;
+                response.Haserror = true;
+            }
+
+            return Ok(response);
+        }
+
+
         [HttpPut("UpdateReview")]
         public IActionResult UpdateReview(UpdateBookingReviewRequest model)
         {
@@ -83,7 +129,8 @@ namespace GemCare.API.Controllers
                     {
                         Comments = model.Comments,
                         ReviewPoints = model.Reviewpoints,
-                        Id = model.Id
+                        Id = model.Id,
+                         IsRead=model.Isread
                     };
                     (int status, string message) = _bookingReviewRepository.UpdateBookingReview(_dto);
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
