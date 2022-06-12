@@ -450,5 +450,49 @@ namespace GemCare.Data.Repository
             // return data.
             return (errorCode, errorMessage);
         }
+
+        public (int status, string message) DeleteBooking(int bookingid)
+        {
+           
+            try
+            {
+                using var dbConnection = new SqlConnection(GetConnectionString());
+                dbConnection.Open();
+                var sqlCommand = new SqlCommand
+                {
+                    Connection = dbConnection,
+                    CommandText = "spDeleteBooking",
+                    CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
+                    CommandType = CommandType.StoredProcedure
+                };
+
+
+                sqlCommand.Parameters.AddWithValue("@BookingId", bookingid);
+                // out params
+
+
+                SqlParameter errCodeParam = new("@pErrCode", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errCodeParam);
+                SqlParameter errMessageParam = new("@pErrMessage", SqlDbType.NVarChar, DataConstants.ERRMESSAGE_LENGTH)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                sqlCommand.Parameters.Add(errMessageParam);
+                //
+                sqlCommand.ExecuteNonQuery();
+                //
+                _status = int.Parse(errCodeParam.Value.ToString());
+                _message = errMessageParam.Value.ToString();
+                
+
+            }
+            catch { throw; }
+            // return data.
+            return (_status, _message);
+        }
+
     }
 }
