@@ -127,7 +127,7 @@ namespace GemCare.API.Controllers
         {
             var response = new SingleResponse<UserUpCommingBookingsResponse>()
             {
-                Result = new  UserUpCommingBookingsResponse()
+                Result = new UserUpCommingBookingsResponse()
             };
             response.Result.UpComingBookings = new List<UserBookingResponse>();
             try
@@ -142,24 +142,24 @@ namespace GemCare.API.Controllers
                     if (bookings.Count > 0)
                     {
                         response.Result.UpComingBookings = (from b in bookings
-                                                             select new UserBookingResponse()
-                                                             {
-                                                                 Bookingid = b.BookingId,
-                                                                 Address = b.Address,
-                                                                 Createdon = b.CreatedOn,
-                                                                 Customername = b.CustomerName,
-                                                                 Email = b.Email,
-                                                                 Expecteddate = b.ExpectedDate,
-                                                                 Imagepath = b.ImagePath,
-                                                                 Mobilenumber = b.MobileNumber,
-                                                                 Paidamount = b.PaidAmount,
-                                                                 Postalcode = b.PostalCode,
-                                                                 Requireddate = b.RequiredDate,
-                                                                 Servicename = b.ServiceName,
-                                                                 Userid = b.UserId,
-                                                                 Workdescription = b.WorkDescription
+                                                            select new UserBookingResponse()
+                                                            {
+                                                                Bookingid = b.BookingId,
+                                                                Address = b.Address,
+                                                                Createdon = b.CreatedOn,
+                                                                Customername = b.CustomerName,
+                                                                Email = b.Email,
+                                                                Expecteddate = b.ExpectedDate,
+                                                                Imagepath = b.ImagePath,
+                                                                Mobilenumber = b.MobileNumber,
+                                                                Paidamount = b.PaidAmount,
+                                                                Postalcode = b.PostalCode,
+                                                                Requireddate = b.RequiredDate,
+                                                                Servicename = b.ServiceName,
+                                                                Userid = b.UserId,
+                                                                Workdescription = b.WorkDescription
 
-                                                             }).ToList();
+                                                            }).ToList();
                     }
                 }
                 else
@@ -176,6 +176,34 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("DeleteBooking/{bookingid}")]
+        public IActionResult DeleteBooking(int bookingid)
+        {
+            BaseResponse response = new BaseResponse();
+          
+            try
+            {
+                if (IsValidBearerRequest)
+                {
 
+                    (int status, string message) = _bookingRepository.DeleteBooking(bookingid);
+                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                       status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                    response.Message = message;
+                   
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ae)
+            {
+                response.Message = ae.Message;
+                response.Haserror = true;
+            }
+
+            return Ok(response);
+        }
     }
 }

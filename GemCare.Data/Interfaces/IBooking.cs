@@ -16,5 +16,6 @@ namespace GemCare.Data.Interfaces
         (int status, string message, List<UserBookingDTO> bookings) GetTechnicianUpcomingBookings(int technicianId);
         (int status, string message, List<UserBookingDTO> bookings) GetTechnicianCompletedBookings(int technicianId);
         (int status, string message) MarkAsComplete(int bookingId, int technicianId, string feedback);
+        (int status, string message) DeleteBooking(int bookingid);
     }
 }
