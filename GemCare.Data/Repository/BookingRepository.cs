@@ -43,10 +43,16 @@ namespace GemCare.Data.Repository
                 sqlCommand.Parameters.AddWithValue("@Email", model.Email);
                 sqlCommand.Parameters.AddWithValue("@PostalCode", model.PostalCode);
                 sqlCommand.Parameters.AddWithValue("@WorkDescription", model.WorkDescription);
-                sqlCommand.Parameters.AddWithValue("@ImagePath", model.ImagePath);
+
+                if (model.ImagesPath != null && model.ImagesPath.Count > 0)
+                    sqlCommand.Parameters.AddWithValue("@ImagePath", string.Join("|", model.ImagesPath.ToArray()));
+                else
+                    sqlCommand.Parameters.AddWithValue("@ImagePath", DBNull.Value);
+
                 sqlCommand.Parameters.AddWithValue("@RequiredDate", model.RequiredDate);
                 sqlCommand.Parameters.AddWithValue("@pAddressNotes", model.AddressNotes);
                 // out params
+
                 SqlParameter _bookingid = new("@BookingID", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -247,7 +253,7 @@ namespace GemCare.Data.Repository
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
                 DateTime _date = DateTime.Now.Date;
-                if (_status > 0 && dt.Rows.Count>0)
+                if (_status > 0 && dt.Rows.Count > 0)
                 {
                     DataRow row = dt.Rows[0];
                     toreturn = new BookingDetailsDTO()
@@ -265,7 +271,7 @@ namespace GemCare.Data.Repository
                         UserId = int.Parse(row["UserId"].ToString()),
                         WorkDescription = row["WorkDescription"].ToString()
                     };
-                    
+
                 }
             }
             catch (Exception ae)
@@ -453,7 +459,7 @@ namespace GemCare.Data.Repository
 
         public (int status, string message) DeleteBooking(int bookingid)
         {
-           
+
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
@@ -486,7 +492,7 @@ namespace GemCare.Data.Repository
                 //
                 _status = int.Parse(errCodeParam.Value.ToString());
                 _message = errMessageParam.Value.ToString();
-                
+
 
             }
             catch { throw; }

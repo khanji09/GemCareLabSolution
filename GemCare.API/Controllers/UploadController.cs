@@ -10,6 +10,7 @@ using GemCare.Data.Interfaces;
 using GemCare.API.Helper;
 using Microsoft.AspNetCore.Cors;
 using GemCare.API.Interfaces;
+using Newtonsoft.Json;
 
 namespace GemCare.API.Controllers
 {
@@ -25,7 +26,7 @@ namespace GemCare.API.Controllers
             _imageHelper = imageHelper;
             _tokenGenerator = tokenGenerator;
         }
-
+        [Obsolete]
         [HttpPost("uploadbookingimage")]
         public async Task<IActionResult> UploadBookingImage([FromForm] BookingImageUploadRequest request)
         {
@@ -52,9 +53,37 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("uploadmultiplebookingimages")]
+        public async Task<IActionResult> multipleuploadbookingimages([FromForm] MultipleBookingImageUploadRequest request)
+        {
+            MultiBookingImageUploadResponse response = new();
+            try
+            {
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
+                {
+                    List<string> imagesPath = await _imageHelper.UploadBookingImagesList(request.bookingimages, request.Userid);
+                    //
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = "Success";
+                    response.ImagesPath = imagesPath;
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
+
+
         [HttpPost("uploadprofileimage")]
         public async Task<IActionResult> UploadProfileImage([FromForm] UserProfileImageRequest request)
         {
+            
             ProfileImageUploadResponse response = new();
             try
             {

@@ -9,6 +9,10 @@ namespace GemCare.API.Contracts.Response
     {
         public string ImagePath { get; set; }
     }
+    public class MultiBookingImageUploadResponse : BaseResponse
+    {
+        public List<string> ImagesPath { get; set; }
+    }
     public class ProfileImageUploadResponse : BaseResponse
     {
         public string ImagePath { get; set; }

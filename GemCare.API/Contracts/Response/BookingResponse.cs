@@ -32,7 +32,7 @@ namespace GemCare.API.Contracts.Response
         public DateTime? Expecteddate { get; set; }
         public int Userid { get; set; }
         public int Paidamount { get; set; }
-        public string Imagepath { get; set; }
+        public List<string> Imagespath { get; set; }
     }
     public class UserCompleteBookingsResponse
     {
