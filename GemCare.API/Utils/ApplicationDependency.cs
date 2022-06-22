@@ -19,6 +19,8 @@ namespace GemCare.API.Utils
             services.AddScoped<IEncryptionDecryptionHelper, EncryptionDecryptionHelper>();
             services.AddTransient<IImageHelper,ImageHelper>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IAddressService, AddressService>();
+            services.AddTransient<IPushService, PushService>();
             return services;
         }
     }

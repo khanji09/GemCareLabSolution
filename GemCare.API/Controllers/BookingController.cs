@@ -2,6 +2,7 @@
 using GemCare.API.Contracts.Request;
 using GemCare.API.Contracts.Response;
 using GemCare.API.Interfaces;
+using GemCare.API.Services;
 using GemCare.Data.DTOs;
 using GemCare.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -9,22 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GemCare.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class BookingController : BaseApiController
     {
         private readonly IBookingRepository _bookingRepository;
-        private readonly ITokenGenerator _tokenGenerator;
-        public BookingController(IBookingRepository bookingRepository, ITokenGenerator tokenGenerator)
+        private readonly IPushService _pushService;
+        private readonly IAddressService _addressService;
+        public BookingController(IBookingRepository bookingRepository, IPushService pushService,
+            IAddressService addressService)
         {
             _bookingRepository = bookingRepository;
-            _tokenGenerator = tokenGenerator;
+            _pushService = pushService;
+            _addressService = addressService;
         }
         [HttpPost("AddBooking")]
-        public IActionResult AddBooking(BookingRequest model)
+        public IActionResult AddBooking([FromBody] BookingRequest model)
         {
             var response = new SingleResponse<BookingResponse>()
             {
@@ -34,25 +37,44 @@ namespace GemCare.API.Controllers
             {
                 if (IsValidBearerRequest)
                 {
-                    BookingDTO booking = new()
+                    var validatePostalCode = Task.Run(() => _addressService.IsValidPostalCode(model.Postalcode));
+                    if (validatePostalCode.Result)
                     {
-                        Email = model.Email,
-                        Name = model.Name,
-                        PostalCode = model.Postalcode,
-                        MobileNumber = model.Mobilenumber,
-                        Address = model.Address,
-                        ImagePath = model.Imagepath,
-                        ServiceId = model.Serviceid,
-                        UserId = User_Id,
-                        WorkDescription = model.Workdescription,
-                        RequiredDate = model.Requireddate,
-                        AddressNotes = model.Addressnotes
-                    };
-                    (int status, string message, int bookingid) = _bookingRepository.AddBooking(booking);
-                    response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
-                       status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
-                    response.Message = message;
-                    response.Result.Bookingid = bookingid;
+                        BookingDTO booking = new()
+                        {
+                            Email = model.Email,
+                            Name = model.Name,
+                            PostalCode = model.Postalcode,
+                            MobileNumber = model.Mobilenumber,
+                            Address = model.Address,
+                            ImagePath = model.Imagepath,
+                            ServiceId = model.Serviceid,
+                            UserId = User_Id,
+                            WorkDescription = model.Workdescription,
+                            RequiredDate = model.Requireddate,
+                            AddressNotes = model.Addressnotes
+                        };
+                        (int status, string message, int bookingid) = _bookingRepository.AddBooking(booking);
+                        response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
+                           status == -2 ? System.Net.HttpStatusCode.Conflict : System.Net.HttpStatusCode.NotFound;
+                        response.Message = message;
+                        response.Result.Bookingid = bookingid;
+                        //if (status > 0)
+                        //{
+                        //    var result = _bookingRepository.GetAdminDeviceInfoForBookingNotification(bookingid);
+                        //    if (result.deviceInfo != null)
+                        //    {
+                        //        var result1 = _pushService.SendBookingNotificationToAdmin(result.deviceInfo.PushTitle,
+                        //            result.deviceInfo.PushBody, result.deviceInfo.PushToken, result.deviceInfo.DevicePlatform);
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        response.Statuscode = System.Net.HttpStatusCode.BadRequest;
+                        response.Message = "Invalid postalcode";
+                        response.Haserror = true;
+                    }
                 }
                 else
                 {

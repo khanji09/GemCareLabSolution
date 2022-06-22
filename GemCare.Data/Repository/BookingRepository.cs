@@ -493,6 +493,5 @@ namespace GemCare.Data.Repository
             // return data.
             return (_status, _message);
         }
-
     }
 }

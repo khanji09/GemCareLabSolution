@@ -36,6 +36,21 @@ public static class SiteKeys
             }
            return payPalConfiguration;
         }
-    } 
+    }
+    public static string PostalCodeApiKey
+    {
+        get
+        {
+            return _configuration.GetSection("ApiKeys")["PostalCode_ApiKey"];
+        }
+    }
+
+    public static string Environment
+    {
+        get
+        {
+            return _configuration.GetSection("ApiKeys")["ApiEnvironment"];
+        }
+    }
 }
 

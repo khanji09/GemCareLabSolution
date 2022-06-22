@@ -20,4 +20,9 @@ namespace GemCare.API.Contracts.Request
         [Required]
         public string Deviceplatform { get; set; }
     }
+
+    public class BookingNotificationRequest
+    {
+
+    }
 }

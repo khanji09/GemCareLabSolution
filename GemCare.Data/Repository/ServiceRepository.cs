@@ -22,7 +22,7 @@ namespace GemCare.Data.Repository
 
         public (int status, string message, List<ServiceDTO> services) GetAllServices()
         {
-            List<ServiceDTO> toreturn = new List<ServiceDTO>();
+            List<ServiceDTO> toreturn = new();
             try
             {
                 using var dbConnection = new SqlConnection(GetConnectionString());
