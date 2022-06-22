@@ -10,6 +10,7 @@ namespace GemCare.API.Helper
     public interface IImageHelper
     {
         Task<string> UploadBookingImage(IFormFile file,int userid);
+        Task<List<string>> UploadBookingImagesList(List<IFormFile> file, int userid);
         Task<string> UploadProfileImage(IFormFile file, int userid);
         Task<string> UploadValuationImage(IFormFile file, int userid);
         Task<string> UploadValuationVideo(IFormFile file, int userid);
@@ -35,6 +36,36 @@ namespace GemCare.API.Helper
             using var fileStream = new FileStream(imagePath, FileMode.Create);
             await file.CopyToAsync(fileStream);
             return imagePath;
+        }
+
+        public async Task<List<string>> UploadBookingImagesList(List<IFormFile> files, int userid)
+        {
+           
+            if (files == null && files.Count<=0) throw new ArgumentNullException("Please select file to upload");
+            foreach (IFormFile file in files) {
+                if (!IsValidMediaFile(file))
+                {
+                    throw new Exception("Invalid file");                   
+                }
+            }
+            string guid = "",imagePath="",fileName="";
+            string fileExt = "";
+            string directoryPath = "";
+            List<string> imagesPath = new List<string>();
+            foreach (IFormFile file in files)
+            {
+                 guid = Guid.NewGuid().ToString().Replace("-", "");
+                 fileExt = Path.GetExtension(file.FileName.ToLower());
+                 directoryPath = $"Uploads/Images/Booking/{userid}";
+                _ = Directory.CreateDirectory(directoryPath);
+               
+                fileName = $"img_{guid}{fileExt}";
+                imagePath = $"{directoryPath}/{fileName}";
+                using var fileStream = new FileStream(imagePath, FileMode.Create);
+                await file.CopyToAsync(fileStream);
+                imagesPath.Add( imagePath);
+            }
+            return imagesPath;
         }
 
         public async Task<string> UploadProfileImage(IFormFile file, int userid)

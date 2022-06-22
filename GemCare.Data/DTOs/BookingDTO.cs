@@ -20,7 +20,7 @@ namespace GemCare.Data.DTOs
         public bool IsCompleted { get; set; } = false;
         public bool IsCancelled { get; set; } = false;
         public string CancellationReason { get; set; }
-        public string ImagePath { get; set; }
+        public List<string> ImagesPath { get; set; }
         public string Address { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }

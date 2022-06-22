@@ -1,5 +1,6 @@
 ﻿using GemCare.API.Common;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GemCare.API.Contracts.Request
@@ -17,7 +18,7 @@ namespace GemCare.API.Contracts.Request
         [Required]
         public DateTime Requireddate { get; set; }
         [Required]
-        public string Imagepath { get; set; }
+        public List<string> Imagespath { get; set; }
         public string Addressnotes { get; set; }
     }
 

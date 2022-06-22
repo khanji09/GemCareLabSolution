@@ -14,4 +14,12 @@ namespace GemCare.API.Contracts.Request
 
         public IFormFile bookingimage { get; set; } 
     }
+
+    public class MultipleBookingImageUploadRequest : BaseAuthTokenRequest
+    {
+        [GreaterThanZero(ErrorMessage = "{0} must be greater than zero")]
+        public int Userid { get; set; }
+
+        public List<IFormFile> bookingimages { get; set; }
+    }
 }
