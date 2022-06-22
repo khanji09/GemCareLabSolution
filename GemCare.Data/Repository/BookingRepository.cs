@@ -360,7 +360,7 @@ namespace GemCare.Data.Repository
                 var sqlCommand = new SqlCommand
                 {
                     Connection = dbConnection,
-                    CommandText = "spTechnicianUpComingBookings",
+                    CommandText = "spTechnicianCompletedBookings",
                     CommandTimeout = DataConstants.CONNECTION_TIMEOUT,
                     CommandType = CommandType.StoredProcedure
                 };
