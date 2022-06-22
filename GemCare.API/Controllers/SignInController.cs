@@ -193,6 +193,7 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
+        [Obsolete("This API is obsolete now")]
         [HttpPost("generatenewtoken")]
         public IActionResult GenerateNewToken([FromBody] RefreshTokenRequest request)
         {

@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using GemCare.API.Utils;
 using GemCare.API.Contracts.Response;
 using Stripe;
+using GemCare.API.Helper;
+using GemCare.API.Interfaces;
+using GemCare.API.Services;
 
 namespace GemCare.API
 {
@@ -41,6 +44,8 @@ namespace GemCare.API
          
             services.AddApplicationDependency();
             services.AddDataDependency();
+            // configuration
+            //services.AddTransient<IPushService, PushService>();
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(option =>
                 {
@@ -51,6 +56,7 @@ namespace GemCare.API
                         return new OkObjectResult(FormatOutput(actionContext));
                     };
                 });
+            services.AddHostedService<BackgroundNotificationService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gem Care Lab", Version = "v1.0" });

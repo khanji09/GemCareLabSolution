@@ -41,7 +41,8 @@ namespace GemCare.API.Controllers
                                            Id = service.Id,
                                            ImageUrl = service.ImageUrl,
                                            Name = service.Name,
-                                           Price = service.Price
+                                           Price = service.Price,
+                                           Shortdescription = service.ShortDescription
                                        }).ToList();
                 }
             }

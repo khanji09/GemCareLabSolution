@@ -60,7 +60,8 @@ namespace GemCare.API.Controllers
                     CreateOrderRequest orderRequest = new CreateOrderRequest()
                     {
                         intent = "CAPTURE",
-                        processing_instruction = "ORDER_COMPLETE_ON_PAYMENT_APPROVAL",
+                        //processing_instruction = "ORDER_COMPLETE_ON_PAYMENT_APPROVAL",
+                        processing_instruction = "NO_INSTRUCTION",
                         purchase_units = new[]
                         {
                      new PayPal.Business.Request.Purchase_Units()
@@ -119,7 +120,7 @@ namespace GemCare.API.Controllers
                     }
                     else
                     {
-                        response.Message = "Order failure";
+                        response.Message = $"Order failure - {response.Result.status.ToUpper()} - {response.Result.processing_instruction}";
                         response.Haserror = true;
                         response.Statuscode = System.Net.HttpStatusCode.Forbidden;
                     }
