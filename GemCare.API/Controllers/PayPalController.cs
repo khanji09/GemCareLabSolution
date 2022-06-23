@@ -34,13 +34,40 @@ namespace GemCare.API.Controllers
             _bookingRepository = bookingRepository;
             _paymentRepository = paymentRepository;
         }
-        //[HttpGet("getaccesstoken")]
-        //public IActionResult getAccessToken()
-        //{
-        //    var response = new BaseResponse();
-        //    response.Message = PayPal.Business.AccessToken.GetAccessTokenWithBearer();
-        //    return Ok(response);
-        //}
+
+        [HttpGet("accesstoken")]
+        public IActionResult GetAccessToken()
+        {
+            var response = new BaseResponse
+            {
+                Statuscode = System.Net.HttpStatusCode.BadGateway,
+                Message = "Token error"
+            };
+            if (IsValidBearerRequest)
+            {
+                var pAccessToken = string.Empty;
+                try
+                {
+                    //response.Message = AccessToken.GetAccessTokenWithBearer();
+                    pAccessToken = AccessToken.GetAccessToken();
+                }
+                catch(Exception ex)
+                {
+                    response.ToHttpExceptionResponse(ex.Message);
+                }
+                if (!string.IsNullOrEmpty(pAccessToken))
+                {
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = pAccessToken;
+                }
+            }
+            else
+            {
+                response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+            }
+            //
+            return Ok(response);
+        }
 
         [HttpPost("CreateOrder")]
         public IActionResult CreateOrder(PayPalCreateOrderRequest model)
@@ -55,12 +82,12 @@ namespace GemCare.API.Controllers
                 if (IsValidBearerRequest)
                 {
                     (int status, string message, BookingDetailsDTO booking) = _bookingRepository.BookingDetails(model.BookingId);
-
+                    // intent = "AUTHORIZE"
+                    //processing_instruction = "ORDER_COMPLETE_ON_PAYMENT_APPROVAL",
                     #region order object
                     CreateOrderRequest orderRequest = new CreateOrderRequest()
                     {
                         intent = "CAPTURE",
-                        //processing_instruction = "ORDER_COMPLETE_ON_PAYMENT_APPROVAL",
                         processing_instruction = "NO_INSTRUCTION",
                         purchase_units = new[]
                         {
@@ -70,8 +97,8 @@ namespace GemCare.API.Controllers
                          {
                            new PayPal.Business.Request.Item()
                            {
-                           description=string.IsNullOrEmpty(booking.WorkDescription)?"description":booking.WorkDescription,
-                           name=booking.ServiceName,
+                           description= string.IsNullOrEmpty(booking.WorkDescription)?"description":booking.WorkDescription,
+                           name= booking.ServiceName,
                             quantity="1",
                             unit_amount=new PayPal.Business.Request.Unit_Amount()
                             {
@@ -106,7 +133,7 @@ namespace GemCare.API.Controllers
 
                     response.Message = "success";
                     response.Result = _payPalService.CreateOrder(orderRequest);
-                    if (response.Result != null && string.Equals(response.Result.status.Trim().ToUpper(), "CREATED"))
+                    if (response.Result != null && string.Equals(response.Result.status?.Trim().ToUpper(), "CREATED"))
                     {
                         (int _status, string _message) = _paymentRepository.SavePayPalPaymentInfo(new PayPalPaymentDTO()
                         {
@@ -120,7 +147,7 @@ namespace GemCare.API.Controllers
                     }
                     else
                     {
-                        response.Message = $"Order failure - {response.Result.status.ToUpper()} - {response.Result.processing_instruction}";
+                        response.Message = $"Order failure - {response.Result.Error.name} - {response.Result.Error.message}";
                         response.Haserror = true;
                         response.Statuscode = System.Net.HttpStatusCode.Forbidden;
                     }
