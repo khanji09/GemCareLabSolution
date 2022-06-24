@@ -17,4 +17,8 @@ namespace GemCare.API.Contracts.Response
     {
         public string ImagePath { get; set; }
     }
+    public class BookingVideoUploadResponse : BaseResponse
+    {
+        public string VideoPath { get; set; }
+    }
 }

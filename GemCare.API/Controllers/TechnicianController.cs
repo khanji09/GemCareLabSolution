@@ -50,13 +50,15 @@ namespace GemCare.API.Controllers
                                                                 Email = b.Email,
                                                                 Expecteddate = b.ExpectedDate,
                                                                 Imagespath = b.ImagePath.Split("|").ToList(),
+                                                                Videopath=b.VideoPath,
                                                                 Mobilenumber = b.MobileNumber,
                                                                 Paidamount = b.PaidAmount,
                                                                 Postalcode = b.PostalCode,
                                                                 Requireddate = b.RequiredDate,
                                                                 Servicename = b.ServiceName,
                                                                 Userid = b.UserId,
-                                                                Workdescription = b.WorkDescription
+                                                                Workdescription = b.WorkDescription,
+                                                               
 
                                                             }).ToList();
                     }
@@ -103,6 +105,7 @@ namespace GemCare.API.Controllers
                                                                  Email = b.Email,
                                                                  Expecteddate = b.ExpectedDate,
                                                                  Imagespath = b.ImagePath.Split("|").ToList(),
+                                                                 Videopath=b.VideoPath,
                                                                  Mobilenumber = b.MobileNumber,
                                                                  Paidamount = b.PaidAmount,
                                                                  Postalcode = b.PostalCode,

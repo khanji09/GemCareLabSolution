@@ -52,7 +52,8 @@ namespace GemCare.API.Controllers
                             UserId = User_Id,
                             WorkDescription = model.Workdescription,
                             RequiredDate = model.Requireddate,
-                            AddressNotes = model.Addressnotes
+                            AddressNotes = model.Addressnotes,
+                             VideoPath=model.Videopath
                         };
                         (int status, string message, int bookingid) = _bookingRepository.AddBooking(booking);
                         response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK :
@@ -119,6 +120,7 @@ namespace GemCare.API.Controllers
                                                                  Email = b.Email,
                                                                  Expecteddate = b.ExpectedDate,
                                                                  Imagespath = b.ImagePath.Split("|").ToList(),
+                                                                 Videopath=b.VideoPath,
                                                                  Mobilenumber = b.MobileNumber,
                                                                  Paidamount = b.PaidAmount,
                                                                  Postalcode = b.PostalCode,
@@ -173,13 +175,15 @@ namespace GemCare.API.Controllers
                                                                 Email = b.Email,
                                                                 Expecteddate = b.ExpectedDate,
                                                                 Imagespath = b.ImagePath.Split("|").ToList(),
+                                                                Videopath=b.VideoPath,
                                                                 Mobilenumber = b.MobileNumber,
                                                                 Paidamount = b.PaidAmount,
                                                                 Postalcode = b.PostalCode,
                                                                 Requireddate = b.RequiredDate,
                                                                 Servicename = b.ServiceName,
                                                                 Userid = b.UserId,
-                                                                Workdescription = b.WorkDescription
+                                                                Workdescription = b.WorkDescription,
+                                                                 
 
                                                             }).ToList();
                     }
