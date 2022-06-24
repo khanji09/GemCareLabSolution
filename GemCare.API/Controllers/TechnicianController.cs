@@ -88,7 +88,6 @@ namespace GemCare.API.Controllers
             {
                 if (IsValidBearerRequest)
                 {
-
                     (int status, string message, List<UserBookingDTO> bookings) = _bookingRepository
                         .GetTechnicianCompletedBookings(User_Id);
                     response.Statuscode = status > 0 ? System.Net.HttpStatusCode.OK
@@ -114,7 +113,6 @@ namespace GemCare.API.Controllers
                                                                  Servicename = b.ServiceName,
                                                                  Userid = b.UserId,
                                                                  Workdescription = b.WorkDescription
-
                                                              }).ToList();
                     }
                 }

@@ -26,7 +26,8 @@ namespace GemCare.API.Controllers
             _imageHelper = imageHelper;
             _tokenGenerator = tokenGenerator;
         }
-        [Obsolete]
+
+        //[Obsolete]
         [HttpPost("uploadbookingimage")]
         public async Task<IActionResult> UploadBookingImage([FromForm] BookingImageUploadRequest request)
         {

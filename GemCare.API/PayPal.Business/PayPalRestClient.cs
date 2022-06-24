@@ -40,11 +40,21 @@ namespace GemCare.API.PayPal.Business
                                                                          // return createOrderResponse;
                     createOrderResponse = JsonConvert.DeserializeObject<CreateOrderResponse>(res);
                     createOrderResponse.PayPalRequestId = orderGuid;
-                    return createOrderResponse;
+                    //return createOrderResponse;
+                }
+                else
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    createOrderResponse = new CreateOrderResponse
+                    {
+                        Error = JsonConvert.DeserializeObject<PayPalError>(responseContent),
+                        id = null,
+                        PayPalRequestId = null
+                    };
                 }
             }
-
-            return null;
+            return createOrderResponse;
+            //return null;
         }
 
         public static async Task<CaptureOrderResponse> CapturePayment(PayPalCapturePaymentRequest capturePaymentRequest)

@@ -11,14 +11,16 @@ namespace GemCare.API.PayPal.Business
         private string jsonstring;
         private CreateOrderResponse _CreateOrderResponse(CreateOrderRequest obj)
         {
-            Task.Run(() => PayPalRestClient.CreateOrder(obj)).Wait();
-            this._createOrderResponse= PayPalRestClient.createOrderResponse;
-            return _createOrderResponse;
+            var createOrderRequest = Task.Run(() => PayPalRestClient.CreateOrder(obj));//.Wait();
+            return createOrderRequest.Result;
+            //Task.Run(() => PayPalRestClient.CreateOrder(obj)).Wait();
+            //this._createOrderResponse= PayPalRestClient.createOrderResponse;
+            //return _createOrderResponse;
         }
         public CreateOrderResponse CreateOrder(CreateOrderRequest createOrderObject)
         {
-            _CreateOrderResponse(createOrderObject);
-            return this._createOrderResponse;
+            return _CreateOrderResponse(createOrderObject);
+            //return this._createOrderResponse;
         }
 
         private CaptureOrderResponse _CapturePayment(PayPalCapturePaymentRequest obj)

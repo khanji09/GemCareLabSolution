@@ -33,6 +33,7 @@ namespace GemCare.API.PayPal.Business.Response
         public Purchase_Units[] purchase_units { get; set; }
         public DateTime create_time { get; set; }
         public Link[] links { get; set; }
+        public PayPalError Error { get; set; }
     }
 
     public class Purchase_Units
@@ -86,6 +87,13 @@ namespace GemCare.API.PayPal.Business.Response
         public string href { get; set; }
         public string rel { get; set; }
         public string method { get; set; }
+    }
+
+    public class PayPalError
+    {
+        public string name { get; set; }
+        public string message { get; set; }
+        public string debug_id { get; set; }
     }
 
 }
