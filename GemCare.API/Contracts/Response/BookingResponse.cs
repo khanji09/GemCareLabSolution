@@ -33,6 +33,7 @@ namespace GemCare.API.Contracts.Response
         public int Userid { get; set; }
         public int Paidamount { get; set; }
         public List<string> Imagespath { get; set; }
+        public string Videopath { get; set; }
     }
     public class UserCompleteBookingsResponse
     {

@@ -159,5 +159,31 @@ namespace GemCare.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("uploadbookingvideo")]
+        public async Task<IActionResult> UploadbookingVideo([FromForm] ValuationImageRequest request)
+        {
+            BookingVideoUploadResponse response = new();
+            try
+            {
+                if (_tokenGenerator.ValidateToken(request.Authtoken).isValid)
+                {
+                    var videoPath = await _imageHelper.UploadBookingVideo(request.file, request.Userid);
+                    //
+                    response.Statuscode = System.Net.HttpStatusCode.OK;
+                    response.Message = "Success";
+                    response.VideoPath = videoPath;
+                }
+                else
+                {
+                    response.ToHttpForbiddenResponse(AppConstants.BEARER_ERRMESSAGE);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ToHttpExceptionResponse(ex.Message);
+            }
+            return Ok(response);
+        }
+
     }
 }

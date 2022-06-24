@@ -14,6 +14,7 @@ namespace GemCare.API.Helper
         Task<string> UploadProfileImage(IFormFile file, int userid);
         Task<string> UploadValuationImage(IFormFile file, int userid);
         Task<string> UploadValuationVideo(IFormFile file, int userid);
+        Task<string> UploadBookingVideo(IFormFile file, int userid);
 
     }
     public class ImageHelper : IImageHelper
@@ -113,6 +114,24 @@ namespace GemCare.API.Helper
             //
             string fileExt = Path.GetExtension(file.FileName.ToLower());
             string directoryPath = $"Uploads/Videos/Valuation/{userid}";
+            var directoryInfo = Directory.CreateDirectory(directoryPath);
+            string imagePath, fileName;
+            fileName = $"vid_{guid}{fileExt}";
+            imagePath = $"{directoryPath}/{fileName}";
+            using var fileStream = new FileStream(imagePath, FileMode.Create);
+            await file.CopyToAsync(fileStream);
+            return imagePath;
+        }
+
+        public async Task<string> UploadBookingVideo(IFormFile file, int userid)
+        {
+            string guid = Guid.NewGuid().ToString().Replace("-", "");
+            if (file == null) throw new ArgumentNullException("Please select file to upload");
+            if (file.Length == 0) throw new ArgumentException("Please select valid file to upload");
+            if (!IsValidVideoFile(file)) throw new Exception("Invalid file");
+            //
+            string fileExt = Path.GetExtension(file.FileName.ToLower());
+            string directoryPath = $"Uploads/Videos/Booking/{userid}";
             var directoryInfo = Directory.CreateDirectory(directoryPath);
             string imagePath, fileName;
             fileName = $"vid_{guid}{fileExt}";

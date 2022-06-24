@@ -27,6 +27,7 @@ namespace GemCare.Data.DTOs
         public string PostalCode { get; set; }
         public string MobileNumber { get; set; }
         public string AddressNotes { get; set; }
+        public string VideoPath { get; set; }
     }
 
     public class UserBookingDTO
@@ -45,6 +46,7 @@ namespace GemCare.Data.DTOs
         public int UserId { get; set; }
         public int PaidAmount { get; set; }
         public string ImagePath { get; set; }
+        public string VideoPath { get; set; }
     }
 
 

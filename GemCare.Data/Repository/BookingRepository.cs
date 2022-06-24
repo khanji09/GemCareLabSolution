@@ -43,6 +43,7 @@ namespace GemCare.Data.Repository
                 sqlCommand.Parameters.AddWithValue("@Email", model.Email);
                 sqlCommand.Parameters.AddWithValue("@PostalCode", model.PostalCode);
                 sqlCommand.Parameters.AddWithValue("@WorkDescription", model.WorkDescription);
+                sqlCommand.Parameters.AddWithValue("@VideoPath", string.IsNullOrEmpty(model.VideoPath) ? DBNull.Value : model.VideoPath);
 
                 if (model.ImagesPath != null && model.ImagesPath.Count > 0)
                     sqlCommand.Parameters.AddWithValue("@ImagePath", string.Join("|", model.ImagesPath.ToArray()));
@@ -135,7 +136,8 @@ namespace GemCare.Data.Repository
                             PostalCode = row["PostalCode"].ToString(),
                             ServiceName = row["ServiceName"].ToString(),
                             UserId = int.Parse(row["UserId"].ToString()),
-                            WorkDescription = row["WorkDescription"].ToString()
+                            WorkDescription = row["WorkDescription"].ToString(),
+                            VideoPath = row["VideoPath"].ToString()
                         });
                     }
                 }
@@ -203,7 +205,8 @@ namespace GemCare.Data.Repository
                             RequiredDate = DateTime.TryParse(row["RequiredDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
                             ServiceName = row["ServiceName"].ToString(),
                             UserId = int.Parse(row["UserId"].ToString()),
-                            WorkDescription = row["WorkDescription"].ToString()
+                            WorkDescription = row["WorkDescription"].ToString(),
+                            VideoPath = row["VideoPath"].ToString()
                         });
                     }
                 }
@@ -337,7 +340,8 @@ namespace GemCare.Data.Repository
                             RequiredDate = DateTime.TryParse(row["RequiredDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
                             ServiceName = row["ServiceName"].ToString(),
                             UserId = int.Parse(row["UserId"].ToString()),
-                            WorkDescription = row["WorkDescription"].ToString()
+                            WorkDescription = row["WorkDescription"].ToString(),
+                            VideoPath = row["VideoPath"].ToString()
                         });
                     }
                 }
@@ -404,7 +408,8 @@ namespace GemCare.Data.Repository
                             RequiredDate = DateTime.TryParse(row["RequiredDate"].ToString(), out _date) ? _date : DateTime.Today.AddDays(7),
                             ServiceName = row["ServiceName"].ToString(),
                             UserId = int.Parse(row["UserId"].ToString()),
-                            WorkDescription = row["WorkDescription"].ToString()
+                            WorkDescription = row["WorkDescription"].ToString(),
+                            VideoPath = row["VideoPath"].ToString()
                         });
                     }
                 }

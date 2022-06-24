@@ -20,6 +20,7 @@ namespace GemCare.API.Contracts.Request
         [Required]
         public List<string> Imagespath { get; set; }
         public string Addressnotes { get; set; }
+        public string Videopath { get; set; }
     }
 
     public class BookingCompleteRequest
